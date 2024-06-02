@@ -1,0 +1,77 @@
+esphome:
+  name: prana
+  friendly_name: prana
+
+# Strongly recommended to use IDF framework instead of arduino.
+esp32:
+  board: esp32dev
+  framework:
+    type: esp-idf
+
+# Enable logging
+logger:
+  level: DEBUG
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "kdAdDoQJx1JvVKfCRpxL8/v1uEwVMzNb//SiXqk7O/c="
+
+ota:
+  password: "78effb261d1553074b66d0b05fade4c2"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Prana Fallback Hotspot"
+    password: !secret wifi_password
+
+captive_portal:
+
+# MAC address can be obtained via "BLE Scanner app on your smartphone or BLE Client Tracker component"
+# TODO: try to merge it with "prana_ble"
+ble_client:
+  - mac_address: 00:A0:50:00:00:03
+    id: prana
+
+prana_ble:
+  id: prana_client
+  ble_client_id: prana
+
+# voltage and frequency sensors should be accessible for all models
+sensor:
+  - platform: prana_ble
+    prana_ble_id: prana_client
+    voltage:
+      name: "Prana voltage"
+    frequency:
+      name: "Prana frequency"
+
+switch:
+# Switch to turn off BLE connection. Useful if you want to connect from native smartphone app
+  - platform: prana_ble
+    prana_ble_id: prana_client
+    connect:
+      name: prana_connect
+      restore_mode: ALWAYS_ON
+    enable:
+      id: enable
+      name: prana_enable
+    heating:
+      id: heating
+      name: prana_heating
+    winter_mode:
+      name: prana_winter_mode
+
+# TODO: make option to control in/out fans
+fan:
+  - platform: prana_ble
+    prana_ble_id: prana_client
+    name: prana_fan
+
+external_components:
+  - source: https://github.com/voed/prana_ble@main
+    components: [prana_ble]
