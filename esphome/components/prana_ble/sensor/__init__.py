@@ -128,7 +128,7 @@ async def to_code(config):
 
     if CONF_TVOC in config:
         sens = await sensor.new_sensor(config[CONF_TVOC])
-        cg.add(var.set_voc(sens))
+        cg.add(var.set_tvoc(sens))
 
     if CONF_VOLTAGE in config:
         sens = await sensor.new_sensor(config[CONF_VOLTAGE])
