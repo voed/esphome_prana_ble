@@ -401,6 +401,7 @@ void PranaBLEHub::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t 
           }
         } 
         this->last_notify_ = millis();
+        ESP_LOGV(TAG, "Packet: %s", format_hex_pretty(param->notify.value, param->notify.value_len).c_str());
         ESP_LOGV(TAG, "speed: %d", param->notify.value[26] / 10);
         ESP_LOGV(TAG, "speed: %d", packet->speed / 10);
         ESP_LOGV(TAG, "speedIn: %d", param->notify.value[30]/ 10);
