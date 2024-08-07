@@ -410,9 +410,9 @@ void PranaBLEHub::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t 
         ESP_LOGV(TAG, "speedOut: %d", packet->speed_out/ 10);
         ESP_LOGV(TAG, "heat: %d", param->notify.value[14]);
         ESP_LOGV(TAG, "heat: %d", packet->heating_on);
-        ESP_LOGV(TAG, "winter_mode: %d", param->notify.value[42]);
+        ESP_LOGV(TAG, "winter_mode_raw: %d", param->notify.value[42]);
         ESP_LOGV(TAG, "winter_mode: %d", packet->winter_mode);
-        ESP_LOGV(TAG, "winter_mode: %d", param->notify.value[96]);
+        ESP_LOGV(TAG, "voltage_raw:: %d", param->notify.value[96]);
         ESP_LOGV(TAG, "voltage: %d", packet->voltage);
 
 

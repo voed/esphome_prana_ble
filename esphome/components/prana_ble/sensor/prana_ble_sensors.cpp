@@ -32,12 +32,12 @@ void PranaBLESensors::on_status(const PranaStatusPacket *data) {
   if(this->temp_out_ != nullptr && is_temp_valid(data->temp_out_v1))
     this->temp_out_->publish_state(data->temp_out_v1);
 
-  if(this->humidity_ != nullptr && data->humidity < 100)
-    this->humidity_->publish_state(data->humidity);
+  if(this->humidity_ != nullptr)
+    this->humidity_->publish_state(data->humidity - 128);
 
   //TODO: add validation
   if(this->pressure_ != nullptr)
-    this->pressure_->publish_state(data->pressure);
+    this->pressure_->publish_state(512 + data->pressure);
 
   if(this->tvoc_ != nullptr)
     this->tvoc_->publish_state(data->voc);
