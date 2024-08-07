@@ -12,6 +12,8 @@ DEPENDENCIES = ["ble_client"]
 MULTI_CONF = True
 CONF_PRANA_ID = "prana_ble_id"
 
+MULTI_CONF = 3
+
 prana_ble_ns = cg.esphome_ns.namespace("prana_ble")
 PranaBLEHub = prana_ble_ns.class_(
     "PranaBLEHub", ble_client.BLEClientNode, cg.PollingComponent
