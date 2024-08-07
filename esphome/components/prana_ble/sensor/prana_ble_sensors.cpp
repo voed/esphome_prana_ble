@@ -40,10 +40,10 @@ void PranaBLESensors::on_status(const PranaStatusPacket *data) {
     this->pressure_->publish_state(512 + data->pressure);
 
   if(this->tvoc_ != nullptr)
-    this->tvoc_->publish_state(data->voc);
+    this->tvoc_->publish_state(byteswap(data->voc) & 0x3fff);
 
   if(this->co2_ != nullptr)
-    this->co2_->publish_state(data->co2);
+    this->co2_->publish_state(byteswap(data->co2) & 0x3fff);
 
   if(this->voltage_ != nullptr)
     this->voltage_->publish_state(data->voltage);
