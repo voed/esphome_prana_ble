@@ -2,10 +2,10 @@ esphome:
   name: prana
   friendly_name: prana
 
-# Strongly recommended to use IDF framework instead of arduino.
+
 esp32:
   board: esp32dev
-  framework:
+  framework: # Strongly recommended to use IDF framework instead of arduino. 
     type: esp-idf
 
 # Enable logging
@@ -15,10 +15,11 @@ logger:
 # Enable Home Assistant API
 api:
   encryption:
-    key: "kdAdDoQJx1JvVKfCRpxL8/v1uEwVMzNb//SiXqk7O/c="
+    key: <your key>
 
 ota:
-  password: "78effb261d1553074b66d0b05fade4c2"
+  platform: esphome
+  password: <your password>
 
 wifi:
   ssid: !secret wifi_ssid
@@ -31,8 +32,9 @@ wifi:
 
 captive_portal:
 
-# MAC address can be obtained via "BLE Scanner app on your smartphone or BLE Client Tracker component"
+# MAC address can be obtained via "BLE Scanner" app on your smartphone or BLE Client Tracker component
 # TODO: try to merge it with "prana_ble"
+# TODO: make option to add by device name?
 ble_client:
   - mac_address: 00:A0:50:00:00:03
     id: prana
@@ -41,7 +43,7 @@ prana_ble:
   id: prana_client
   ble_client_id: prana
 
-# voltage and frequency sensors should be accessible for all models
+# voltage and frequency sensors seems only available for old devices with 220V fans
 sensor:
   - platform: prana_ble
     prana_ble_id: prana_client
@@ -51,22 +53,23 @@ sensor:
       name: "Prana frequency"
 
 switch:
-# Switch to turn off BLE connection. Useful if you want to connect from native smartphone app
   - platform: prana_ble
     prana_ble_id: prana_client
-    connect:
+    connect: # Switch to turn off BLE connection between recuperator and ESP32. Useful if you want to connect from native smartphone app
       name: prana_connect
       restore_mode: ALWAYS_ON
-    enable:
+    enable: # turn on/off the device
       id: enable
       name: prana_enable
-    heating:
+    heating: # turn on/off internal heating element
       id: heating
       name: prana_heating
-    winter_mode:
+    winter_mode:  # turn on/off "winter" mode
       name: prana_winter_mode
+    auto_mode:  # turn on/off "auto" mode. Untested.
+      name: prana_auto_mode
 
-# TODO: make option to control in/out fans
+# TODO: make option to control in/out fans. For now only controlling both fans available.
 fan:
   - platform: prana_ble
     prana_ble_id: prana_client
@@ -75,3 +78,4 @@ fan:
 external_components:
   - source: https://github.com/voed/prana_ble@main
     components: [prana_ble]
+    refresh: 1min
