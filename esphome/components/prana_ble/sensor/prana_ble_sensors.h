@@ -25,7 +25,7 @@ class PranaBLESensors : public PranaBLEClient, public PollingComponent {
 
   void set_temp_in(sensor::Sensor *temp_in) { temp_in_ = temp_in; }
   void set_temp_out(sensor::Sensor *temp_out) { temp_out_ = temp_out; }
-  void set_humidity(sensor::Sensor *humidity) { humidity_ = humidity_; }
+  void set_humidity(sensor::Sensor *humidity) { humidity_ = humidity; }
   void set_pressure(sensor::Sensor *pressure) { pressure_ = pressure; }
   void set_tvoc(sensor::Sensor *tvoc) { tvoc_ = tvoc; }
   void set_co2(sensor::Sensor *co2) { co2_ = co2; }
