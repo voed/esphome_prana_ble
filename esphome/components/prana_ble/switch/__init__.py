@@ -65,3 +65,9 @@ async def to_code(config):
         await cg.register_component(sw, config)
         cg.add(sw.set_switch_type(PranaSwitchType.WINTER))
         await register_prana_child(sw, config)
+
+    if CONF_AUTO_MODE in config:
+        sw = await switch.new_switch(config[CONF_AUTO_MODE])
+        await cg.register_component(sw, config)
+        cg.add(sw.set_switch_type(PranaSwitchType.AUTO))
+        await register_prana_child(sw, config)
