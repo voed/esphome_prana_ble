@@ -88,7 +88,7 @@ struct PranaStatusPacket {
   uint8_t unknown4[6];//35-40
   uint8_t unused9;
   bool winter_mode : 8;//42
-  uint8_t unknown5[6];//47
+  uint8_t unknown5[5];//47
   short temp_inside_in;//48-49
   uint8_t unknown6;
   short temp_outside_in;//51-52 //short?
