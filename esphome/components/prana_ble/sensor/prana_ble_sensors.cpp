@@ -11,13 +11,18 @@ void PranaBLESensors::dump_config() { ESP_LOGCONFIG("", "Prana BLE Sensors"); }
 std::string PranaBLESensors::describe() { return "Prana BLE Sensors"; }
 
 
-bool is_temp_valid(int temp)
+bool is_temp_valid(float temp)
 {
   //TODO: test this
-  if(abs(temp) > 50)
+  if(abs(temp) > 60.0)
     return false;
 
   return true;
+}
+
+float convert_temp(short temp)
+{
+  return (byteswap(temp) & 0x3fff) / 10.0;
 }
 
 void PranaBLESensors::on_status(const PranaStatusPacket *data) {
@@ -25,12 +30,34 @@ void PranaBLESensors::on_status(const PranaStatusPacket *data) {
   if(data == nullptr)
     return;
   
-  //TODO: add v2 support
-  if(this->temp_in_ != nullptr && is_temp_valid(data->temp_in_v1))
-    this->temp_in_->publish_state(data->temp_in_v1);
+  float temp = 0.0;
+  if(this->temp_inside_out_ != nullptr)
+  {
+    temp = convert_temp(data->temp_inside_out);
+    if(is_temp_valid(temp))
+      this->temp_inside_out_->publish_state(temp);
+  }
 
-  if(this->temp_out_ != nullptr && is_temp_valid(data->temp_out_v1))
-    this->temp_out_->publish_state(data->temp_out_v1);
+  if(this->temp_inside_in_ != nullptr)
+  {
+    temp = convert_temp(data->temp_inside_in);
+    if(is_temp_valid(temp))
+      this->temp_inside_in_->publish_state(temp);
+  }
+
+  if(this->temp_outside_out_ != nullptr)
+  {
+    temp = convert_temp(data->temp_outside_out);
+    if(is_temp_valid(temp))
+      this->temp_outside_out_->publish_state(temp);
+  }
+
+  if(this->temp_outside_in_ != nullptr)
+  {
+    temp = convert_temp(data->temp_outside_in);
+    if(is_temp_valid(temp))
+      this->temp_outside_in_->publish_state(temp);
+  }
 
   if(this->humidity_ != nullptr)
     this->humidity_->publish_state(data->humidity - 128);

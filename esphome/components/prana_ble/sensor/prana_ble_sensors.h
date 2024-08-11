@@ -23,8 +23,10 @@ class PranaBLESensors : public PranaBLEClient, public PollingComponent {
   void on_prana_state(bool is_ready) override{};
   std::string describe() override;
 
-  void set_temp_in(sensor::Sensor *temp_in) { temp_in_ = temp_in; }
-  void set_temp_out(sensor::Sensor *temp_out) { temp_out_ = temp_out; }
+  void set_temp_inside_out(sensor::Sensor *temp) { temp_inside_out_ = temp; }
+  void set_temp_inside_in(sensor::Sensor *temp) { temp_inside_in_ = temp; }
+  void set_temp_outside_out(sensor::Sensor *temp) { temp_outside_out_ = temp; }
+  void set_temp_outside_in(sensor::Sensor *temp) { temp_outside_in_ = temp; }
   void set_humidity(sensor::Sensor *humidity) { humidity_ = humidity; }
   void set_pressure(sensor::Sensor *pressure) { pressure_ = pressure; }
   void set_tvoc(sensor::Sensor *tvoc) { tvoc_ = tvoc; }
@@ -33,8 +35,10 @@ class PranaBLESensors : public PranaBLEClient, public PollingComponent {
   void set_frequency(sensor::Sensor *frequency) { frequency_ = frequency; }
 
  protected:
-  sensor::Sensor *temp_in_{nullptr};
-  sensor::Sensor *temp_out_{nullptr};
+  sensor::Sensor *temp_inside_out_{nullptr};
+  sensor::Sensor *temp_inside_in_{nullptr};
+  sensor::Sensor *temp_outside_out_{nullptr};
+  sensor::Sensor *temp_outside_in_{nullptr};
   sensor::Sensor *humidity_{nullptr};
   sensor::Sensor *pressure_{nullptr};
   sensor::Sensor *tvoc_{nullptr};

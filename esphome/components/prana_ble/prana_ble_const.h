@@ -88,10 +88,10 @@ struct PranaStatusPacket {
   uint8_t unknown4[6];//35-40
   uint8_t unused9;
   bool winter_mode : 8;//42
-  uint8_t unknown5[6];//48
-  uint8_t temp_in_v1;//49
+  uint8_t unknown5[6];//47
+  short temp_inside_in;//48-49
   uint8_t unknown6;
-  short temp_in_v2;//51-52 //short?
+  short temp_outside_in;//51-52 //short?
   uint8_t unknown7;
 
 /*  struct { //short?
@@ -102,14 +102,16 @@ struct PranaStatusPacket {
 
 union
 {
-  short temp_out_v2;
+  short temp_inside_out;
   struct { //short?
     uint8_t unused12 : 8;//54 
     uint8_t temp_out_v1 : 8;//55
   } __attribute__((packed));
 };
 
-  uint8_t unknown8[4];//56-59
+  uint8_t unknown8;//56
+  short temp_outside_out; //57-58
+  uint8_t unknown9;//59
   uint8_t humidity;//60
   short co2;//61-62 //short?
   short voc;//63-64

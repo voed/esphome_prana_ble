@@ -37,8 +37,11 @@ from .. import (
 _LOGGER = logging.getLogger(__name__)
 CODEOWNERS = ["@voed"]
 DEPENDENCIES = ["prana_ble"]
-CONF_INLET_TEMP = "temperature_in"
-CONF_OUTLET_TEMP = "temperature_out"
+CONF_INSIDE_OUTLET_TEMP = "temperature_inside_outlet"
+CONF_INSIDE_INLET_TEMP = "temperature_inside_inlet"
+CONF_OUTSIDE_OUTLET_TEMP = "temperature_outside_outlet"
+CONF_OUTSIDE_INLET_TEMP = "temperature_outside_inlet"
+
 
 
 PranaBLESensor = prana_ble_ns.class_("PranaBLESensors", cg.PollingComponent)
@@ -47,13 +50,25 @@ CONFIG_SCHEMA = (
     cv.Schema(
         {
             cv.GenerateID(): cv.declare_id(PranaBLESensor),
-            cv.Optional(CONF_INLET_TEMP): sensor.sensor_schema(
+            cv.Optional(CONF_INSIDE_OUTLET_TEMP): sensor.sensor_schema(
                 unit_of_measurement=UNIT_CELSIUS,
                 accuracy_decimals=1,
                 device_class=DEVICE_CLASS_TEMPERATURE,
                 state_class=STATE_CLASS_MEASUREMENT,
             ),
-            cv.Optional(CONF_OUTLET_TEMP): sensor.sensor_schema(
+            cv.Optional(CONF_INSIDE_INLET_TEMP): sensor.sensor_schema(
+                unit_of_measurement=UNIT_CELSIUS,
+                accuracy_decimals=1,
+                device_class=DEVICE_CLASS_TEMPERATURE,
+                state_class=STATE_CLASS_MEASUREMENT,
+            ),
+            cv.Optional(CONF_OUTSIDE_OUTLET_TEMP): sensor.sensor_schema(
+                unit_of_measurement=UNIT_CELSIUS,
+                accuracy_decimals=1,
+                device_class=DEVICE_CLASS_TEMPERATURE,
+                state_class=STATE_CLASS_MEASUREMENT,
+            ),
+            cv.Optional(CONF_OUTSIDE_INLET_TEMP): sensor.sensor_schema(
                 unit_of_measurement=UNIT_CELSIUS,
                 accuracy_decimals=1,
                 device_class=DEVICE_CLASS_TEMPERATURE,
@@ -106,13 +121,21 @@ async def to_code(config):
     await cg.register_component(var, config)
     await register_prana_child(var, config)
 
-    if CONF_INLET_TEMP in config:
-        sens = await sensor.new_sensor(config[CONF_INLET_TEMP])
-        cg.add(var.set_temp_in(sens))
+    if CONF_INSIDE_OUTLET_TEMP in config:
+        sens = await sensor.new_sensor(config[CONF_INSIDE_OUTLET_TEMP])
+        cg.add(var.set_temp_inside_out(sens))
 
-    if CONF_OUTLET_TEMP in config:
-        sens = await sensor.new_sensor(config[CONF_OUTLET_TEMP])
-        cg.add(var.set_temp_out(sens))
+    if CONF_INSIDE_INLET_TEMP in config:
+        sens = await sensor.new_sensor(config[CONF_INSIDE_INLET_TEMP])
+        cg.add(var.set_temp_inside_in(sens))
+
+    if CONF_OUTSIDE_OUTLET_TEMP in config:
+        sens = await sensor.new_sensor(config[CONF_OUTSIDE_OUTLET_TEMP])
+        cg.add(var.set_temp_outside_out(sens))
+
+    if CONF_OUTSIDE_INLET_TEMP in config:
+        sens = await sensor.new_sensor(config[CONF_OUTSIDE_INLET_TEMP])
+        cg.add(var.set_temp_outside_in(sens))
 
     if CONF_HUMIDITY in config:
         sens = await sensor.new_sensor(config[CONF_HUMIDITY])
