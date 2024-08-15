@@ -80,7 +80,7 @@ void PranaBLESwitch::on_status(const PranaStatusPacket *data) {
     }
     case PranaSwitchType::AUTO:
     {
-      this->publish_state(data->auto_mode);
+      //this->publish_state(data->auto_mode);
       break;
     }
     case PranaSwitchType::CONNECT:

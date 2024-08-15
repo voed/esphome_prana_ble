@@ -93,6 +93,24 @@ bool PranaBLEHub::set_fan_speed(PranaFan fan, short new_speed)
   return true;
 }
 
+
+bool PranaBLEHub::set_auto_mode(PranaFanMode new_mode)
+{
+  // we need to press auto button one or two times
+  auto diff = new_mode - status.fan_mode;
+  if(diff != 0)
+  {
+    command_auto_mode();
+    if(diff == 2 || diff == -1)
+    {
+      delay(50);
+      command_auto_mode();
+    }
+
+  }
+  return true;
+}
+
 bool PranaBLEHub::set_fan_step(PranaFan fan, bool up)
 {
   bool result = false;
