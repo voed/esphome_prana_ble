@@ -59,8 +59,9 @@ void PranaBLEFan::control(const fan::FanCall &call) {
     }
   }
   auto preset = call.get_preset_mode();
-  if(!preset.empty())
+  if(!preset.empty() || this->preset_mode != preset)
   {
+    ESP_LOGD(TAG, "Changing preset from %s to %s", this->preset_mode.c_str(), preset.c_str());
     auto mode = get_mode_from_string(preset);
     this->preset_mode = preset;
     this->parent_->set_auto_mode(mode); 
