@@ -36,21 +36,48 @@ captive_portal:
 # TODO: try to merge it with "prana_ble"
 # TODO: make option to add by device name?
 ble_client:
-  - mac_address: 00:A0:50:00:00:03
+  - mac_address: 00:A0:50:00:00:00
     id: prana
+#You can use multiple devices by specifying their MACS and ids
+  - mac_address: 00:A0:50:00:00:01
+    id: prana2
 
 prana_ble:
-  id: prana_client
-  ble_client_id: prana
+  - id: prana_client
+    ble_client_id: prana
+  - id: prana_client2
+    ble_client_id: prana2
 
-# voltage and frequency sensors seems only available for old devices with 220V fans
+
 sensor:
   - platform: prana_ble
     prana_ble_id: prana_client
+
+#temperature sensors
+    temperature_inside_inlet: # top left sensor in Prana app
+      name: "Prana temperature inside inlet" 
+    temperature_inside_outlet: # bottom left sensor in Prana app
+      name: "Prana temperature inside outlet" 
+    temperature_outside_inlet:  # top right sensor in Prana app
+      name: "Prana temperature outside inlet"
+    temperature_outside_outlet: # bottom right sensor in Prana app
+      name: "Prana temperature outside outlet"
+
+    co2:
+      name: "Prana CO2"
+    pressure:
+      name: "Prana Pressure"
+    humidity:
+      name: "Prana Humidity"
+    tvoc:
+      name: "Prana TVOC"
+      
+# voltage and frequency sensors seems only available for old devices with 220V fans
     voltage:
       name: "Prana voltage"
     frequency:
       name: "Prana frequency"
+
 
 switch:
   - platform: prana_ble
@@ -66,8 +93,6 @@ switch:
       name: prana_heating
     winter_mode:  # turn on/off "winter" mode
       name: prana_winter_mode
-    auto_mode:  # turn on/off "auto" mode. Untested.
-      name: prana_auto_mode
 
 # TODO: make option to control in/out fans. For now only controlling both fans available.
 fan:
