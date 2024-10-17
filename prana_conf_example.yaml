@@ -1,13 +1,25 @@
-esphome:
+substitutions:
   name: prana
-  friendly_name: prana
-
-
+  friendly_name: Prana
+  device_description: "Monitor and control a Parana Recuperator via bluetooth"
+  external_components_source: github://voed/prana_ble@master
+  mac_address_01: 00:A0:50:00:00:00
+  mac_address_02: 00:A0:50:00:00:01
+   
+esphome:
+  name: ${name}
+  comment: ${device_description}
+  
 esp32:
   board: esp32dev
   framework: # Strongly recommended to use IDF framework instead of arduino. 
     type: esp-idf
 
+external_components:
+  - source: ${external_components_source}
+    components: [prana_ble] 
+    refresh: 0s
+    
 # Enable logging
 logger:
   level: DEBUG
@@ -30,16 +42,21 @@ wifi:
     ssid: "Prana Fallback Hotspot"
     password: !secret wifi_password
 
-captive_portal:
-
 # MAC address can be obtained via "BLE Scanner" app on your smartphone or BLE Client Tracker component
+
+# Enables scanning of Bluetooth (BLE) devices via ESP32. To determine the MAC address
+# esp32_ble_tracker:
+# text_sensor:
+#   - platform: ble_scanner
+#     name: "BLE Devices Scanner"
+    
 # TODO: try to merge it with "prana_ble"
 # TODO: make option to add by device name?
 ble_client:
-  - mac_address: 00:A0:50:00:00:00
+  - mac_address: ${mac_address_01}
     id: prana
 #You can use multiple devices by specifying their MACS and ids
-  - mac_address: 00:A0:50:00:00:01
+  - mac_address: ${mac_address_02}
     id: prana2
 
 prana_ble:
@@ -48,37 +65,35 @@ prana_ble:
   - id: prana_client2
     ble_client_id: prana2
 
-
 sensor:
   - platform: prana_ble
     prana_ble_id: prana_client
 
 #temperature sensors
     temperature_inside_inlet: # top left sensor in Prana app
-      name: "Prana temperature inside inlet" 
+      name: "${name} temperature inside inlet" 
     temperature_inside_outlet: # bottom left sensor in Prana app
-      name: "Prana temperature inside outlet" 
+      name: "${name} temperature inside outlet" 
     temperature_outside_inlet:  # top right sensor in Prana app
-      name: "Prana temperature outside inlet"
+      name: "${name} temperature outside inlet"
     temperature_outside_outlet: # bottom right sensor in Prana app
-      name: "Prana temperature outside outlet"
+      name: "${name} temperature outside outlet"
 
     co2:
-      name: "Prana CO2"
+      name: "${name} CO2"
     pressure:
-      name: "Prana Pressure"
+      name: "${name} Pressure"
     humidity:
-      name: "Prana Humidity"
+      name: "${name} Humidity"
     tvoc:
-      name: "Prana TVOC"
+      name: "${name} TVOC"
       
 # voltage and frequency sensors seems only available for old devices with 220V fans
     voltage:
-      name: "Prana voltage"
+      name: "${name} voltage"
     frequency:
-      name: "Prana frequency"
-
-
+      name: "${name} frequency"
+      
 switch:
   - platform: prana_ble
     prana_ble_id: prana_client
@@ -99,8 +114,3 @@ fan:
   - platform: prana_ble
     prana_ble_id: prana_client
     name: prana_fan
-
-external_components:
-  - source: https://github.com/voed/prana_ble@main
-    components: [prana_ble]
-    refresh: 1min
