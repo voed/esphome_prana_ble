@@ -67,7 +67,9 @@ enum PranaCommand : uint8_t {
 
 struct PranaStatusPacket {
   uint8_t magic[2];
-  uint8_t command[7];
+  uint8_t prefix[2];
+  uint32_t time;
+  uint8_t suffix;
   uint8_t unused1; // C0
   bool enabled : 8;//[10]
   uint8_t unused2;

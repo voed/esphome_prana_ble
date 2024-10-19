@@ -71,6 +71,21 @@ bool PranaBLEHub::command_disconnect()
 }
 
 
+void PranaBLEHub::set_fans_locked(bool locked)
+{
+  if(locked != fans_locked_)
+  {
+    
+    send_command(CMD_FAN_LOCK, false);
+    
+  }
+}
+
+bool PranaBLEHub::get_fans_locked()
+{
+  return fans_locked_;
+}
+
 bool PranaBLEHub::set_fan_speed(PranaFan fan, short new_speed)
 {
   auto speed_diff = new_speed - get_fan_speed(fan);
@@ -161,6 +176,7 @@ bool PranaBLEHub::set_fan_step(PranaFan fan, bool up)
 
 bool PranaBLEHub::set_fan_off(PranaFan fan)
 {
+  ESP_LOGD(TAG, "TURNING OFF FAN %i", fan);
   switch(fan)
   {
     case FAN_BOTH:
@@ -188,9 +204,9 @@ bool PranaBLEHub::set_fan_on(PranaFan fan)
         status.enabled = true;
       break;
     case FAN_IN:
-      return false;
+      return command_fan_in_off();
     case FAN_OUT:
-      return false;
+      return command_fan_out_off();
   }
   return false;
 }
@@ -421,6 +437,7 @@ void PranaBLEHub::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t 
           }
         } 
         this->last_notify_ = millis();
+        this->fans_locked_ = packet->fans_locked;
         ESP_LOGV(TAG, "Packet: %s", format_hex_pretty(param->notify.value, param->notify.value_len).c_str());
         ESP_LOGV(TAG, "speed: %d", param->notify.value[26] / 10);
         ESP_LOGV(TAG, "speed: %d", packet->speed / 10);

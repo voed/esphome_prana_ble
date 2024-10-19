@@ -30,12 +30,12 @@ class PranaBLEFan : public fan::Fan, public PranaBLEClient, public PollingCompon
 
   void set_has_auto(bool has_auto) {has_auto_ = has_auto;}
 
-  //void set_fan_type(PranaFan fan) { fan_type = PranaFan::FAN_BOTH; }
+  void set_fan_type(PranaFan fan_type) { fan_type_ = fan_type; }
  protected:
   void control(const fan::FanCall &call) override;
   PranaFanMode fan_mode;
   fan::FanTraits traits_;
-  //PranaFan fan_type;
+  PranaFan fan_type_;
   bool has_auto_{false};
 
  private:

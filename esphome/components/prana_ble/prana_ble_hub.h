@@ -54,6 +54,9 @@ class PranaBLEHub : public esphome::ble_client::BLEClientNode, public PollingCom
   bool command_fan_in_speed_down() { return send_command(CMD_FAN_IN_SPEED_DOWN, true); }
   bool command_fan_in_off() { return send_command(CMD_FAN_IN_OFF, true); }
 
+  void set_fans_locked(bool locked);
+  bool get_fans_locked();
+
   short get_fan_speed(PranaFan fan); 
   bool set_fan_speed(PranaFan fan, short new_speed);
 
@@ -114,6 +117,7 @@ class PranaBLEHub : public esphome::ble_client::BLEClientNode, public PollingCom
   static const uint32_t DEFAULT_STATUS_TIMEOUT = 900000;
 
   PranaStatusPacket status;
+  bool fans_locked_;
 
   uint8_t set_notify_(bool enable);
   /** Send the `PranaCmdPacket` to the device. */
