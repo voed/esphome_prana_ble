@@ -1,12 +1,12 @@
 substitutions:
   name: prana
-  friendly_name: Prana
   device_description: "Monitor and control a Parana Recuperator via bluetooth"
   external_components_source: github://voed/prana_ble@master
   mac_address_01: 00:A0:50:00:00:00
   mac_address_02: 00:A0:50:00:00:01
    
 esphome:
+  friendly_name: Prana
   name: ${name}
   comment: ${device_description}
   
@@ -71,43 +71,41 @@ sensor:
 
 #temperature sensors
     temperature_inside_inlet: # top left sensor in Prana app
-      name: "${name} temperature inside inlet" 
+      name: "Temperature inside inlet" 
     temperature_inside_outlet: # bottom left sensor in Prana app
-      name: "${name} temperature inside outlet" 
+      name: "Temperature inside outlet" 
     temperature_outside_inlet:  # top right sensor in Prana app
-      name: "${name} temperature outside inlet"
+      name: "Temperature outside inlet"
     temperature_outside_outlet: # bottom right sensor in Prana app
-      name: "${name} temperature outside outlet"
+      name: "Temperature outside outlet"
 
     co2:
-      name: "${name} CO2"
+      name: "CO2"
     pressure:
-      name: "${name} Pressure"
+      name: "Pressure"
     humidity:
-      name: "${name} Humidity"
+      name: "Humidity"
     tvoc:
-      name: "${name} TVOC"
+      name: "TVOC"
       
 # voltage and frequency sensors seems only available for old devices with 220V fans
     voltage:
-      name: "${name} voltage"
+      name: "Voltage"
     frequency:
-      name: "${name} frequency"
+      name: "Frequency"
       
 switch:
   - platform: prana_ble
     prana_ble_id: prana_client
     connect: # Switch to turn off BLE connection between recuperator and ESP32. Useful if you want to connect from native smartphone app
-      name: prana_connect
+      name: Bluetooth connect
       restore_mode: ALWAYS_ON
     enable: # turn on/off the device
-      id: enable
-      name: prana_enable
+      name: Enable
     heating: # turn on/off internal heating element
-      id: heating
-      name: prana_heating
+      name: Heating
     winter_mode:  # turn on/off "winter" mode
-      name: prana_winter_mode
+      name: Winter mode
 
 # TODO: make option to control in/out fans. For now only controlling both fans available.
 fan:
