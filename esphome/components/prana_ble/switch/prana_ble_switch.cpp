@@ -58,7 +58,6 @@ void PranaBLESwitch::write_state(bool state) {
 }
 
 void PranaBLESwitch::on_status(const PranaStatusPacket *data) {
-  ESP_LOGD(TAG, "[%s] Handling on_status with data=%p", this->get_name().c_str(), (void *) data);
     if(data == nullptr)
     return;
   switch(switch_type_)

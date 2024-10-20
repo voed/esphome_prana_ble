@@ -57,7 +57,7 @@ class PranaBLEHub : public esphome::ble_client::BLEClientNode, public PollingCom
   void set_fans_locked(bool locked);
   bool get_fans_locked();
 
-  short get_fan_speed(PranaFan fan); 
+  short get_fan_speed(PranaFan fan);
   bool set_fan_speed(PranaFan fan, short new_speed);
 
   bool set_fan_off(PranaFan fan);
@@ -65,6 +65,9 @@ class PranaBLEHub : public esphome::ble_client::BLEClientNode, public PollingCom
   bool set_fan_on(PranaFan fan);
 
   bool set_auto_mode(PranaFanMode new_mode);
+
+  short get_brightness();
+  void set_brightness(short value);
 
   /** Send the `button`. */
   bool send_command(const PranaCommand command, bool update=false);

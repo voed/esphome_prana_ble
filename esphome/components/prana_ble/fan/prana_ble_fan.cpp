@@ -44,14 +44,14 @@ void PranaBLEFan::control(const fan::FanCall &call) {
     return;
   }
   bool did_change = false;
-  if(call.get_state().has_value() && *call.get_state() != this->state)
+  if(call.get_state().has_value() && call.get_state() != this->state)
   {
     if(this->state)
       this->parent_->set_fan_off(fan_type_);
     else
       this->parent_->set_fan_on(fan_type_);
     this->state = !this->state;
-    return;
+    did_change = true;
   }
   // ignore speed changes if not on or turning on
   if (this->state && call.get_speed().has_value()) {
@@ -80,10 +80,7 @@ void PranaBLEFan::control(const fan::FanCall &call) {
 }
 
 void PranaBLEFan::on_status(const PranaStatusPacket *data) {
-  ESP_LOGV(TAG, "[%s] Handling on_status with data=%p", this->get_name().c_str(), (void *) data);
   bool did_change = false;
-
-
 
   if(this->fan_mode != data->fan_mode || this->preset_mode.empty())
   {
@@ -109,7 +106,6 @@ void PranaBLEFan::on_status(const PranaStatusPacket *data) {
         did_change = true;
       }
       
-      ESP_LOGD(TAG, "Changing to %s", this->preset_mode.c_str());
       break;
     }
     case PranaFan::FAN_OUT:
@@ -126,7 +122,6 @@ void PranaBLEFan::on_status(const PranaStatusPacket *data) {
         did_change = true;
       }
       
-      ESP_LOGD(TAG, "Changing to %s", this->preset_mode.c_str());
       break;
     }
     case PranaFan::FAN_BOTH:
@@ -142,8 +137,6 @@ void PranaBLEFan::on_status(const PranaStatusPacket *data) {
         this->state = data->enabled;
         did_change = true;
       }
-      
-      ESP_LOGD(TAG, "Changing to %s", this->preset_mode.c_str());
 
         
       break;
@@ -183,7 +176,6 @@ void PranaBLEFan::update() {
   // TODO: if the hub component is already polling, do we also need to include polling?
   //  We're already going to get on_status() at the hub's polling interval.
   auto result = this->update_status_();
-  ESP_LOGD(TAG, "[%s] update_status result=%s", this->get_name().c_str(), result ? "true" : "false");
 }
 
 /** Resets states to defaults. */

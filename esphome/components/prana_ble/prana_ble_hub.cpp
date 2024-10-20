@@ -227,6 +227,24 @@ short PranaBLEHub::get_fan_speed(PranaFan fan)
 }
 
 
+short PranaBLEHub::get_brightness()
+{
+  return log2(status.brightness) +1;
+}
+void PranaBLEHub::set_brightness(short value)
+{
+  if(value == get_brightness())
+    return;
+
+  auto diff = (value - get_brightness() + 6) % 6;
+  ESP_LOGW(TAG, "Sending brightness %i times %i %i", diff,value, get_brightness());
+  for(int i=0; i < diff; ++i) {
+    send_command(CMD_BRIGHTNESS, false);
+    delay(10);
+  }
+
+
+}
 bool PranaBLEHub::send_command(PranaCommand command, bool update) {
   auto packet = new PranaCmdPacket(command);
   auto status = this->send_packet(packet, update);

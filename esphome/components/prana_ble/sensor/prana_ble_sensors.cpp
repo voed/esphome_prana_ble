@@ -26,7 +26,6 @@ float convert_temp(short temp)
 }
 
 void PranaBLESensors::on_status(const PranaStatusPacket *data) {
-  ESP_LOGV(TAG, " Handling on_status with data=%p",  (void *) data);
   if(data == nullptr)
     return;
   
