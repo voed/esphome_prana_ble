@@ -106,9 +106,31 @@ switch:
       name: Heating
     winter_mode:  # turn on/off "winter" mode
       name: Winter mode
+    fan_lock:
+      name: Fan lock
 
-# TODO: make option to control in/out fans. For now only controlling both fans available.
+# TODO: make this more readable
 fan:
   - platform: prana_ble
     prana_ble_id: prana_client
-    name: prana_fan
+    has_auto: true #if your recuperator does not have auto/auto+ options, change this to false
+    name: In/Out fans # use fan_lock switch to control separate fans
+    fan_type: BOTH
+
+  - platform: prana_ble
+    prana_ble_id: prana_client
+    has_auto: true
+    name: Inlet fan
+    fan_type: INLET
+
+  - platform: prana_ble
+    prana_ble_id: prana_client
+    has_auto: true
+    name: Outlet fan
+    fan_type: OUTLET
+
+number:
+  - platform: prana_ble
+    prana_ble_id: prana_client
+    name: Display brightness
+

@@ -39,6 +39,12 @@ enum PranaFan : uint8_t {
   FAN_BOTH        = 0x05
 };
 
+enum PranaFanMode : uint8_t {
+  Manual,
+  Auto,
+  Auto_Plus
+};
+
 enum PranaCommand : uint8_t {
   CMD_POWER_OFF           = 0x01,
   CMD_BRIGHTNESS          = 0x02,
@@ -61,7 +67,9 @@ enum PranaCommand : uint8_t {
 
 struct PranaStatusPacket {
   uint8_t magic[2];
-  uint8_t command[7];
+  uint8_t prefix[2];
+  uint32_t time;
+  uint8_t suffix;
   uint8_t unused1; // C0
   bool enabled : 8;//[10]
   uint8_t unused2;
@@ -72,7 +80,7 @@ struct PranaStatusPacket {
   bool night_mode : 8; //16
   uint8_t unused11;
   uint8_t unknown1[2];
-  bool auto_mode : 8; //20
+  PranaFanMode fan_mode; //20
   uint8_t unused5;
   bool fans_locked : 8; //22
   uint8_t unknown2[3];
@@ -94,20 +102,7 @@ struct PranaStatusPacket {
   short temp_outside_in;//51-52 //short?
   uint8_t unknown7;
 
-/*  struct { //short?
-    uint8_t temp_out_v2 : 8;//54 
-    uint8_t temp_out_v1 : 8;//55
-  } __attribute__((packed)) temp_out;
-*/
-
-union
-{
   short temp_inside_out;
-  struct { //short?
-    uint8_t unused12 : 8;//54 
-    uint8_t temp_out_v1 : 8;//55
-  } __attribute__((packed));
-};
 
   uint8_t unknown8;//56
   short temp_outside_out; //57-58
@@ -126,6 +121,7 @@ union
 
 static const uint8_t PRANA_FAN_SPEED_COUNT = 10;
 static const std::string PRANA_FAN_STEP_NAME_STRINGS[] = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10" };
+static const std::vector<std::string> PRANA_FAN_MODES {"Manual", "Auto", "Auto+"};
 
 }  // namespace prana_ble
 }  // namespace esphome

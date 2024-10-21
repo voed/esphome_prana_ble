@@ -36,11 +36,6 @@ void PranaBLESwitch::write_state(bool state) {
       this->parent_->command_winter_mode();
       break;
     }
-    case PranaSwitchType::AUTO:
-    {
-      this->parent_->command_auto_mode();
-      break;
-    }
     case PranaSwitchType::CONNECT:
     {
       if(state)
@@ -49,7 +44,13 @@ void PranaBLESwitch::write_state(bool state) {
       }
       else
         this->parent_->command_disconnect();
-      
+      break;
+    }
+    case PranaSwitchType::FAN_LOCK:
+    {
+      parent_->set_fans_locked(state);
+
+      break;
     }
   }
 
@@ -57,7 +58,6 @@ void PranaBLESwitch::write_state(bool state) {
 }
 
 void PranaBLESwitch::on_status(const PranaStatusPacket *data) {
-  ESP_LOGD(TAG, "[%s] Handling on_status with data=%p", this->get_name().c_str(), (void *) data);
     if(data == nullptr)
     return;
   switch(switch_type_)
@@ -78,14 +78,16 @@ void PranaBLESwitch::on_status(const PranaStatusPacket *data) {
       this->publish_state(data->winter_mode);
       break;
     }
-    case PranaSwitchType::AUTO:
-    {
-      this->publish_state(data->auto_mode);
-      break;
-    }
     case PranaSwitchType::CONNECT:
     {
       this->publish_state(this->parent_->is_connection_enabled());
+      break;
+    }
+
+    case PranaSwitchType::FAN_LOCK:
+    {
+      this->publish_state(this->parent_->get_fans_locked());
+      break;
     }
   }
 }

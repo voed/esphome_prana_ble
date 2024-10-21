@@ -24,6 +24,7 @@ CONF_HEATING = "heating"
 CONF_WINTER_MODE = "winter_mode"
 CONF_AUTO_MODE = "auto_mode"
 CONF_CONNECT = "connect"
+CONF_FAN_LOCK = "fan_lock"
 
 
 CONFIG_SCHEMA = (
@@ -34,7 +35,8 @@ CONFIG_SCHEMA = (
             cv.Optional(CONF_ENABLE): switch.switch_schema(PranaBLESwitch),
             cv.Optional(CONF_HEATING): switch.switch_schema(PranaBLESwitch),
             cv.Optional(CONF_WINTER_MODE): switch.switch_schema(PranaBLESwitch),
-            cv.Optional(CONF_AUTO_MODE): switch.switch_schema(PranaBLESwitch)
+            cv.Optional(CONF_AUTO_MODE): switch.switch_schema(PranaBLESwitch),
+            cv.Optional(CONF_FAN_LOCK): switch.switch_schema(PranaBLESwitch)
         }
     )
     .extend(cv.polling_component_schema("1s"))
@@ -66,8 +68,9 @@ async def to_code(config):
         cg.add(sw.set_switch_type(PranaSwitchType.WINTER))
         await register_prana_child(sw, config)
 
-    if CONF_AUTO_MODE in config:
-        sw = await switch.new_switch(config[CONF_AUTO_MODE])
+
+    if CONF_FAN_LOCK in config:
+        sw = await switch.new_switch(config[CONF_FAN_LOCK])
         await cg.register_component(sw, config)
-        cg.add(sw.set_switch_type(PranaSwitchType.AUTO))
+        cg.add(sw.set_switch_type(PranaSwitchType.FAN_LOCK))
         await register_prana_child(sw, config)

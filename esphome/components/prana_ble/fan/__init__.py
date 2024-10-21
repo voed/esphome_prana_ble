@@ -5,10 +5,13 @@ import esphome.config_validation as cv
 from esphome.components import fan
 from esphome.const import (
     CONF_ID,
+    CONF_NAME
 )
 from .. import (
     PRANA_BLE_CLIENT_SCHEMA,
+    CONF_PRANA_ID,
     prana_ble_ns,
+    PranaBLEHub,
     register_prana_child,
 )
 
@@ -17,16 +20,24 @@ CODEOWNERS = ["@voed"]
 DEPENDENCIES = ["prana_ble"]
 
 PranaBLEFan = prana_ble_ns.class_("PranaBLEFan", fan.Fan, cg.PollingComponent)
+PranaFan = prana_ble_ns.enum("PranaFan")
+
+PRANA_FAN_TYPE = {
+    "INLET": PranaFan.FAN_IN,
+    "OUTLET": PranaFan.FAN_OUT,
+    "BOTH": PranaFan.FAN_BOTH
+}
 
 
-CONF_FANS = "fans"
-CONF_FAN_IN = "inlet_fan"
-CONF_FAN_OUT = "outlet_fan"
-
+CONF_HAS_AUTO = "has_auto"
+CONF_FAN_TYPE = "fan_type"
 CONFIG_SCHEMA = (
+
     fan.FAN_SCHEMA.extend(
         {
             cv.GenerateID(): cv.declare_id(PranaBLEFan),
+            cv.Optional(CONF_HAS_AUTO) : cv.boolean,
+            cv.Required(CONF_FAN_TYPE) : cv.enum(PRANA_FAN_TYPE, upper=True)
         }
     )
     .extend(cv.polling_component_schema("1s"))
@@ -36,6 +47,9 @@ CONFIG_SCHEMA = (
 
 async def to_code(config):
     var = cg.new_Pvariable(config[CONF_ID])
+    f = await fan.register_fan(var, config)
     await cg.register_component(var, config)
-    await fan.register_fan(var, config)
+    cg.add(var.set_has_auto(config[CONF_HAS_AUTO]))
+    cg.add(var.set_fan_type(config[CONF_FAN_TYPE]))
     await register_prana_child(var, config)
+

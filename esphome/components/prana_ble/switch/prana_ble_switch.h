@@ -18,8 +18,8 @@ enum PranaSwitchType
   ENABLE,
   HEAT,
   WINTER,
-  AUTO,
-  CONNECT
+  CONNECT,
+  FAN_LOCK
 };
 
 class PranaBLESwitch : public switch_::Switch, public PranaBLEClient, public PollingComponent {
