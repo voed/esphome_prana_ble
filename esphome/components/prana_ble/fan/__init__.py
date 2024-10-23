@@ -19,7 +19,7 @@ _LOGGER = logging.getLogger(__name__)
 CODEOWNERS = ["@voed"]
 DEPENDENCIES = ["prana_ble"]
 
-PranaBLEFan = prana_ble_ns.class_("PranaBLEFan", fan.Fan, cg.PollingComponent)
+PranaBLEFan = prana_ble_ns.class_("PranaBLEFan", fan.Fan, cg.Component)
 PranaFan = prana_ble_ns.enum("PranaFan")
 
 PRANA_FAN_TYPE = {
@@ -40,7 +40,7 @@ CONFIG_SCHEMA = (
             cv.Required(CONF_FAN_TYPE) : cv.enum(PRANA_FAN_TYPE, upper=True)
         }
     )
-    .extend(cv.polling_component_schema("1s"))
+    .extend(cv.COMPONENT_SCHEMA)
     .extend(PRANA_BLE_CLIENT_SCHEMA)
 )
 

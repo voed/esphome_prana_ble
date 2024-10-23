@@ -9,10 +9,8 @@
 namespace esphome {
 namespace prana_ble {
 
-class PranaBLENumber : public number::Number, public PranaBLEClient, public PollingComponent {
+class PranaBLENumber : public number::Number, public PranaBLEClient, public Component {
  public:
-  void update() override;
-  void setup() override;
   void dump_config() override;
   float get_setup_priority() const override { return setup_priority::AFTER_WIFI; }
 

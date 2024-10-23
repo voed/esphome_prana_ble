@@ -12,9 +12,8 @@
 namespace esphome {
 namespace prana_ble {
 
-class PranaBLESensors : public PranaBLEClient, public PollingComponent {
+class PranaBLESensors : public PranaBLEClient, public Component {
  public:
-  void update() override;
   void dump_config() override;
   float get_setup_priority() const override { return setup_priority::AFTER_WIFI; }
 
@@ -45,9 +44,6 @@ class PranaBLESensors : public PranaBLEClient, public PollingComponent {
   sensor::Sensor *co2_{nullptr};
   sensor::Sensor *voltage_{nullptr};
   sensor::Sensor *frequency_{nullptr};
-
- private:
-  bool update_status_();
 };
 
 }  // namespace prana_ble

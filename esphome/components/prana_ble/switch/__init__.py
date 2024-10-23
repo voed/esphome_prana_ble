@@ -16,7 +16,7 @@ _LOGGER = logging.getLogger(__name__)
 CODEOWNERS = ["@voed"]
 DEPENDENCIES = ["prana_ble"]
 
-PranaBLESwitch = prana_ble_ns.class_("PranaBLESwitch", switch.Switch, cg.PollingComponent)
+PranaBLESwitch = prana_ble_ns.class_("PranaBLESwitch", switch.Switch, cg.Component)
 PranaSwitchType = prana_ble_ns.enum("PranaSwitchType")
 
 CONF_ENABLE = "enable"
@@ -39,7 +39,7 @@ CONFIG_SCHEMA = (
             cv.Optional(CONF_FAN_LOCK): switch.switch_schema(PranaBLESwitch)
         }
     )
-    .extend(cv.polling_component_schema("1s"))
+    .extend(cv.COMPONENT_SCHEMA)
     .extend(PRANA_BLE_CLIENT_SCHEMA)
 )
 

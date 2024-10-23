@@ -115,7 +115,6 @@ class PranaBLEHub : public esphome::ble_client::BLEClientNode, public PollingCom
   void dispatch_state_(bool is_ready);
 
   uint32_t timeout_{DEFAULT_STATUS_TIMEOUT};
-  static const uint32_t MIN_NOTIFY_THROTTLE = 100;
   static const uint32_t NOTIFY_WARN_THRESHOLD = 300000;
   static const uint32_t DEFAULT_STATUS_TIMEOUT = 900000;
 

@@ -22,9 +22,8 @@ enum PranaSwitchType
   FAN_LOCK
 };
 
-class PranaBLESwitch : public switch_::Switch, public PranaBLEClient, public PollingComponent {
+class PranaBLESwitch : public switch_::Switch, public PranaBLEClient, public Component {
  public:
-  void update() override;
   void dump_config() override;
   float get_setup_priority() const override { return setup_priority::AFTER_WIFI; }
 
@@ -37,7 +36,6 @@ class PranaBLESwitch : public switch_::Switch, public PranaBLEClient, public Pol
   void write_state(bool state) override;
 
  private:
-  bool update_status_();
   PranaSwitchType switch_type_;
 };
 

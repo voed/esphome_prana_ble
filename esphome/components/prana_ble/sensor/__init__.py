@@ -44,7 +44,7 @@ CONF_OUTSIDE_INLET_TEMP = "temperature_outside_inlet"
 
 
 
-PranaBLESensor = prana_ble_ns.class_("PranaBLESensors", cg.PollingComponent)
+PranaBLESensor = prana_ble_ns.class_("PranaBLESensors", cg.Component)
 
 CONFIG_SCHEMA = (
     cv.Schema(
@@ -112,7 +112,7 @@ CONFIG_SCHEMA = (
             ),
         }
     )
-    .extend(cv.polling_component_schema("1min"))
+    .extend(cv.COMPONENT_SCHEMA)
     .extend(PRANA_BLE_CLIENT_SCHEMA)
 )
 

@@ -4,12 +4,6 @@
 namespace esphome {
 namespace prana_ble {
 
-
-void PranaBLENumber::setup() {
-}
-void PranaBLENumber::update() {
-}
-
 void PranaBLENumber::control(float value) {
   ESP_LOGV(TAG, "Setting number: %f", value);
   if (!this->parent_->is_connected()) {

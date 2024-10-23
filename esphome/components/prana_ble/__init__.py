@@ -5,6 +5,7 @@ from esphome.const import (
     CONF_ID,
     CONF_RECEIVE_TIMEOUT,
     CONF_TIME_ID,
+    CONF_UPDATE_INTERVAL
 )
 
 CODEOWNERS = ["@voed"]
@@ -30,7 +31,7 @@ CONFIG_SCHEMA = (
         }
     )
     .extend(ble_client.BLE_CLIENT_SCHEMA)
-    .extend(cv.polling_component_schema("10s"))
+    .extend(cv.polling_component_schema("1s"))
 )
 
 PRANA_BLE_CLIENT_SCHEMA = cv.Schema(
@@ -46,6 +47,9 @@ async def register_prana_child(var, config):
 
 
 async def to_code(config):
+    if config[CONF_UPDATE_INTERVAL] < cv.time_period("1s"):
+        raise cv.Invalid("Update interval must be more than 1s")
+    
     var = cg.new_Pvariable(config[CONF_ID])
     await cg.register_component(var, config)
     await ble_client.register_ble_node(var, config)

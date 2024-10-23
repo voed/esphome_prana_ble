@@ -15,7 +15,7 @@ DEPENDENCIES = ["prana_ble"]
 CODEOWNERS = ["@voed"]
 
 
-PranaBLENumber = prana_ble_ns.class_("PranaBLENumber", cg.PollingComponent)
+PranaBLENumber = prana_ble_ns.class_("PranaBLENumber", cg.Component)
 
 
 CONFIG_SCHEMA = cv.All(
@@ -25,7 +25,7 @@ CONFIG_SCHEMA = cv.All(
 #            cv.GenerateID(): cv.use_id(PranaBLENumber),
         }
     )
-    .extend(cv.polling_component_schema("1min"))
+    .extend(cv.COMPONENT_SCHEMA)
     .extend(PRANA_BLE_CLIENT_SCHEMA)
 )
 

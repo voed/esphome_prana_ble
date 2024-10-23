@@ -93,7 +93,6 @@ bool PranaBLEHub::set_fan_speed(PranaFan fan, short new_speed)
   if(speed_diff == 0)
     return true;
 
-  ESP_LOGW(TAG, "NEW SPEED: %d, speed diff: %d", new_speed, speed_diff);
   if(new_speed == 0)
   {
     return set_fan_off(fan);
@@ -103,7 +102,7 @@ bool PranaBLEHub::set_fan_speed(PranaFan fan, short new_speed)
   for(int i=1; i <= abs(speed_diff); i++)
   {
     set_fan_step(fan, speed_diff > 0);
-    delay(100);
+    delay(20);
   }
   return true;
 }
@@ -113,7 +112,6 @@ bool PranaBLEHub::set_auto_mode(PranaFanMode new_mode)
 {
   // we need to press auto button one or two times
   auto diff = new_mode - status.fan_mode;
-  ESP_LOGD(TAG, "Changing fan mode from %i to %i", status.fan_mode, new_mode);
   if(diff != 0)
   {
     if(diff == 2 || diff == -1)
@@ -176,7 +174,6 @@ bool PranaBLEHub::set_fan_step(PranaFan fan, bool up)
 
 bool PranaBLEHub::set_fan_off(PranaFan fan)
 {
-  ESP_LOGD(TAG, "TURNING OFF FAN %i", fan);
   switch(fan)
   {
     case FAN_BOTH:
@@ -213,7 +210,6 @@ bool PranaBLEHub::set_fan_on(PranaFan fan)
 
 short PranaBLEHub::get_fan_speed(PranaFan fan) 
 {
-  ESP_LOGW(TAG, "Last packet speed: %d", status.speed / 10);
   switch(fan)
   {
     case FAN_BOTH:
@@ -237,12 +233,11 @@ void PranaBLEHub::set_brightness(short value)
     return;
 
   auto diff = (value - get_brightness() + 6) % 6;
-  ESP_LOGW(TAG, "Sending brightness %i times %i %i", diff,value, get_brightness());
   for(int i=0; i < diff; ++i) {
     send_command(CMD_BRIGHTNESS, false);
-    delay(10);
+    delay(20);
   }
-
+  send_update_request();
 
 }
 bool PranaBLEHub::send_command(PranaCommand command, bool update) {
@@ -292,13 +287,6 @@ uint8_t PranaBLEHub::send_data(uint8_t data[], uint8_t len) {
 
 uint8_t PranaBLEHub::send_update_request()
 {
-  uint8_t diff = millis() - this->last_notify_;
-  if(diff < MIN_NOTIFY_THROTTLE)
-  {
-    ESP_LOGD(TAG, "Last update was %d ms ago, skipping update request", diff);
-    return 0;
-  }
-    
   return send_data(const_cast<uint8_t*>(PRANA_STATE), sizeof(PRANA_STATE));
 }
 
@@ -307,19 +295,24 @@ uint8_t PranaBLEHub::send_update_request()
 uint8_t PranaBLEHub::set_notify_(const bool enable) {
   uint8_t status;
   if (enable) {
-    status = esp_ble_gattc_register_for_notify(this->parent_->get_gattc_if(), this->parent_->get_remote_bda(),
-                                               this->char_handle_);
+    status = esp_ble_gattc_register_for_notify(
+                            this->parent_->get_gattc_if(), 
+                            this->parent_->get_remote_bda(),
+                            this->char_handle_
+                          );
     if (status) {
       ESP_LOGW(TAG, "[%s] esp_ble_gattc_register_for_notify failed, status=%d", this->get_name().c_str(), status);
     }
   } else {
-    status = esp_ble_gattc_unregister_for_notify(this->parent_->get_gattc_if(), this->parent_->get_remote_bda(),
-                                                 this->char_handle_);
+    status = esp_ble_gattc_unregister_for_notify(
+                                this->parent_->get_gattc_if(),
+                                this->parent_->get_remote_bda(),
+                                this->char_handle_
+                              );
     if (status) {
       ESP_LOGW(TAG, "[%s] esp_ble_gattc_unregister_for_notify failed, status=%d", this->get_name().c_str(), status);
     }
   }
-  ESP_LOGV(TAG, "[%s] set_notify: enable=%d; result=%d", this->get_name().c_str(), enable, status);
   return status;
 }
 
@@ -357,10 +350,9 @@ bool PranaBLEHub::discover_characteristics_() {
     }
   }
 
-
-  ESP_LOGI(TAG, "[%s] Discovered service characteristics: ", this->get_name().c_str());
-  ESP_LOGI(TAG, "     - Status char: 0x%x", this->char_handle_);
-  ESP_LOGI(TAG, "       - config descriptor: 0x%x", this->config_descr_status_);
+  ESP_LOGD(TAG, "[%s] Discovered service characteristics: ", this->get_name().c_str());
+  ESP_LOGD(TAG, "     - Status char: 0x%x", this->char_handle_);
+  ESP_LOGD(TAG, "       - config descriptor: 0x%x", this->config_descr_status_);
   return result;
 }
 
@@ -380,12 +372,6 @@ void PranaBLEHub::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t 
         ESP_LOGD(TAG, "[%s] Services complete: obtained char handles.", this->get_name().c_str());
         this->node_state = espbt::ClientState::ESTABLISHED;
         this->set_notify_(true);
-
-#ifdef USE_TIME
-        if (this->time_id_.has_value()) {
-          this->send_local_time();
-        }
-#endif
 
         this->dispatch_state_(true);
       } else {
@@ -445,6 +431,8 @@ void PranaBLEHub::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t 
 
       if(param->notify.value_len > 0)
       {
+        //uint8_t bytes[] = {0xBE,0xEF,0x05,0x01,0x67,0x11,0x96,0xBD,0x5A,0xC0,0x01,0xC0,0x20,0xC0,0x00,0xC0,0x00,0xC0,0x00,0x00,0x01,0xC0,0x00,0x40,0x01,0x40,0x32,0xC0,0x01,0xC0,0x14,0xC0,0x01,0xC0,0x14,0x00,0x00,0x80,0x00,0x00,0x00,0xC0,0x00,0x00,0x01,0x00,0x00,0x00,0x80,0x90,0x00,0x80,0x7D,0x00,0x80,0xC2,0x00,0x00,0x00,0x00,0xBD,0x82,0xA9,0x83,0x26,0x00,0x9B,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x82,0xFA,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,0xC0,0x00,0x00,0x00,0x00,0x0A,0x13,0x00,0x3B,0xE9,0xFE,0x67,0x06,0x3F,0x08,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+        //PranaStatusPacket* packet = (PranaStatusPacket*)bytes;
         PranaStatusPacket* packet = (PranaStatusPacket*)param->notify.value;
         if (packet != nullptr) {
           this->status = *packet;
@@ -457,29 +445,9 @@ void PranaBLEHub::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t 
         this->last_notify_ = millis();
         this->fans_locked_ = packet->fans_locked;
         ESP_LOGV(TAG, "Packet: %s", format_hex_pretty(param->notify.value, param->notify.value_len).c_str());
-        ESP_LOGV(TAG, "speed: %d", param->notify.value[26] / 10);
-        ESP_LOGV(TAG, "speed: %d", packet->speed / 10);
-        ESP_LOGV(TAG, "speedIn: %d", param->notify.value[30]/ 10);
-        ESP_LOGV(TAG, "speedIn: %d", packet->speed_in / 10);
-        ESP_LOGV(TAG, "speedOut: %d", param->notify.value[34] / 10);
-        ESP_LOGV(TAG, "speedOut: %d", packet->speed_out/ 10);
-        ESP_LOGV(TAG, "heat: %d", param->notify.value[14]);
-        ESP_LOGV(TAG, "heat: %d", packet->heating_on);
-        ESP_LOGV(TAG, "winter_mode_raw: %d", param->notify.value[42]);
-        ESP_LOGV(TAG, "winter_mode: %d", packet->winter_mode);
-        ESP_LOGV(TAG, "voltage_raw:: %d", param->notify.value[96]);
-        ESP_LOGV(TAG, "voltage: %d", packet->voltage);
 
 
       }
-
-      // FIXME: notify events come in every ~200-300 ms, which is too fast to be helpful. So we
-      //  throttle the updates to once every MIN_NOTIFY_THROTTLE (5 seconds).
-      //  Another idea would be to keep notify off by default, and use update() as an opportunity to turn on
-      //  notify to get enough data to update status, then turn off notify again.
-
-      uint32_t now = millis();
-      auto delta = now - this->last_notify_;
 
       break;
     }
@@ -489,16 +457,6 @@ void PranaBLEHub::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t 
   }
 }
 
-/*inline void PranaBLEHub::status_packet_ready_() {
-  this->last_notify_ = millis();
-  this->processing_ = false;
-
-  if (this->force_refresh_) {
-    // If we requested an immediate update, do that now.
-    this->update();
-    this->force_refresh_ = false;
-  }
-}*/
 
 /** Reimplementation of BLEClient.gattc_event_handler() for ESP_GATTC_REG_FOR_NOTIFY_EVT.
  *
@@ -563,20 +521,8 @@ void PranaBLEHub::dispatch_status_() {
   {
     ESP_LOGD(TAG, "[%s] Not connected, will not send status.", this->get_name().c_str());
   } else {
-    uint32_t now = millis();
-    uint32_t diff = now - this->last_notify_;
-
-    if (this->last_notify_ == 0) {
-      // This means we're connected and haven't received a notification, so it likely means that the BedJet is off.
-      // However, it could also mean that it's running, but failing to send notifications.
-      // We can try to unregister for notifications now, and then re-register, hoping to clear it up...
-      // But how do we know for sure which state we're in, and how do we actually clear out the buggy state?
-      send_update_request();
-      ESP_LOGI(TAG, "[%s] Still waiting for first GATT notify event.", this->get_name().c_str());
-    } else if (diff > NOTIFY_WARN_THRESHOLD) {
-      ESP_LOGW(TAG, "[%s] Last GATT notify was %d seconds ago.", this->get_name().c_str(), diff / 1000);
-      send_update_request();
-    }
+    uint32_t diff = millis() - this->last_notify_;
+    send_update_request();
 
     if (this->timeout_ > 0 && diff > this->timeout_ && this->parent()->enabled) {
       ESP_LOGW(TAG, "[%s] Timed out after %d sec. Retrying...", this->get_name().c_str(), this->timeout_);

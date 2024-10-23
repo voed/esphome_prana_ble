@@ -31,7 +31,6 @@ void PranaBLEFan::dump_config() { LOG_FAN("", "Prana BLE Fan", this); }
 std::string PranaBLEFan::describe() { return "Prana BLE Fan"; }
 
 void PranaBLEFan::control(const fan::FanCall &call) {
-  ESP_LOGD(TAG, "Received PranaBLEFan::control");
   if (!this->parent_->is_connected()) {
     ESP_LOGW(TAG, "Not connected, cannot handle control call yet.");
     return;
@@ -147,41 +146,6 @@ void PranaBLEFan::on_status(const PranaStatusPacket *data) {
   if (did_change) {
     this->publish_state();
   }
-}
-
-/** Attempts to update the fan device from the last received BedjetStatusPacket.
- *
- * This will be called from #on_status() when the parent dispatches new status packets,
- * and from #update() when the polling interval is triggered.
- *
- * @return `true` if the status has been applied; `false` if there is nothing to apply.
- */
-
-bool PranaBLEFan::update_status_() {
-  if (!this->parent_->is_connected())
-    return false;
-  if (!this->parent_->has_status())
-    return false;
-  auto *status = this->parent_->get_status_packet();
-
-  if (status == nullptr)
-    return false;
-
-  this->on_status(status);
-  return true;
-}
-
-void PranaBLEFan::update() {
-  ESP_LOGD(TAG, "[%s] update()", this->get_name().c_str());
-  // TODO: if the hub component is already polling, do we also need to include polling?
-  //  We're already going to get on_status() at the hub's polling interval.
-  auto result = this->update_status_();
-}
-
-/** Resets states to defaults. */
-void PranaBLEFan::reset_state_() {
-  this->state = false;
-  this->publish_state();
 }
 }  // namespace prana_ble
 }  // namespace esphome
