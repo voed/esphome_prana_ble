@@ -15,29 +15,23 @@ DEPENDENCIES = ["prana_ble"]
 CODEOWNERS = ["@voed"]
 
 
-PranaBLENumber = prana_ble_ns.class_("PranaBLENumber", cg.Component)
+
+PranaBLENumber = prana_ble_ns.class_("PranaBLENumber", number.Number, cg.Component)
 
 
-CONFIG_SCHEMA = cv.All(
+CONFIG_SCHEMA = (
     number.number_schema(PranaBLENumber)
-    .extend(
-        {
-#            cv.GenerateID(): cv.use_id(PranaBLENumber),
-        }
-    )
     .extend(cv.COMPONENT_SCHEMA)
     .extend(PRANA_BLE_CLIENT_SCHEMA)
 )
 
 
 async def to_code(config):
-    var = cg.new_Pvariable(config[CONF_ID])
-    await cg.register_component(var, config)
-    await number.register_number(
-        var,
+    var = await number.new_number(
         config,
         min_value=1,
         max_value=6,
         step=1,
     )
+    await cg.register_component(var, config)
     await register_prana_child(var, config)
