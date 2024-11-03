@@ -227,6 +227,7 @@ short PranaBLEHub::get_brightness()
 {
   return log2(status.brightness) +1;
 }
+
 void PranaBLEHub::set_brightness(short value)
 {
   if(value == get_brightness())
@@ -240,6 +241,25 @@ void PranaBLEHub::set_brightness(short value)
   send_update_request();
 
 }
+
+short PranaBLEHub::get_display_mode()
+{
+  return status.display_mode;
+}
+
+void PranaBLEHub::set_display_mode(short mode)
+{
+  if(mode == get_display_mode())
+    return;
+
+  auto diff = (mode - get_display_mode() + 6) % 6;
+  for(int i=0; i < diff; ++i) {
+    send_command(CMD_DISPLAY_RIGHT, false);
+    delay(20);
+  }
+  send_update_request();
+}
+
 bool PranaBLEHub::send_command(PranaCommand command, bool update) {
   auto packet = new PranaCmdPacket(command);
   auto status = this->send_packet(packet, update);

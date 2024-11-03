@@ -45,6 +45,20 @@ enum PranaFanMode : uint8_t {
   Auto_Plus
 };
 
+enum PranaDisplayMode : uint8_t {
+  _0,
+  _1,
+  _2,
+  _3,
+  _4,
+  _5,
+  _6,
+  _7,
+  _8,
+  _9,
+  _10
+};
+
 enum PranaCommand : uint8_t {
   CMD_POWER_OFF           = 0x01,
   CMD_BRIGHTNESS          = 0x02,
@@ -62,7 +76,9 @@ enum PranaCommand : uint8_t {
   CMD_FAN_SPEED_UP        = 0x0C,
   CMD_FAN_IN_SPEED_UP     = 0x0E,
   CMD_FAN_IN_SPEED_DOWN   = 0x0F,
-  CMD_FAN_IN_OFF          = 0x0D
+  CMD_FAN_IN_OFF          = 0x0D,
+  CMD_DISPLAY_LEFT        = 0x19,
+  CMD_DISPLAY_RIGHT       = 0x1A
 };
 
 struct PranaStatusPacket {
@@ -117,11 +133,14 @@ struct PranaStatusPacket {
   uint8_t unknown12;//95
   uint8_t voltage;//96
   uint8_t frequency;//97
+  uint8_t unknown13;//98
+  uint8_t display_mode;//99
 }  __attribute__((packed));
 
 static const uint8_t PRANA_FAN_SPEED_COUNT = 10;
 static const std::string PRANA_FAN_STEP_NAME_STRINGS[] = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10" };
 static const std::vector<std::string> PRANA_FAN_MODES {"Manual", "Auto", "Auto+"};
+static const std::vector<std::string> PRANA_DISPLAY_MODES {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
 
 }  // namespace prana_ble
 }  // namespace esphome
