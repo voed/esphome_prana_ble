@@ -12,7 +12,7 @@ PranaDisplayMode get_display_mode_from_string(const std::string& mode_string)
     if(PRANA_DISPLAY_MODES[i] == mode_string)
       return static_cast<PranaDisplayMode>(i);
   }
-  return PranaDisplayMode::_0;
+  return PranaDisplayMode::FAN;
 }
 
 void PranaBLESelect::control(const std::string &value) {

@@ -46,17 +46,18 @@ enum PranaFanMode : uint8_t {
 };
 
 enum PranaDisplayMode : uint8_t {
-  _0,
-  _1,
-  _2,
-  _3,
-  _4,
-  _5,
-  _6,
-  _7,
-  _8,
-  _9,
-  _10
+  FAN         = 0,
+  TEMP_IN     = 1,
+  TEMP_OUT    = 2,
+  CO2         = 3,
+  VOC         = 4,
+  HUMIDITY    = 5,
+  AIR_QUALITY = 6,
+  PRESSURE    = 7,
+  UNUSED      = 8,
+  DATE        = 9,
+  TIME        = 10,
+  MODE_COUNT  = 11
 };
 
 enum PranaCommand : uint8_t {
@@ -84,7 +85,7 @@ enum PranaCommand : uint8_t {
 struct PranaStatusPacket {
   uint8_t magic[2];
   uint8_t prefix[2];
-  uint32_t time;
+  uint32_t timestamp;
   uint8_t suffix;
   uint8_t unused1; // C0
   bool enabled : 8;//[10]
@@ -140,7 +141,7 @@ struct PranaStatusPacket {
 static const uint8_t PRANA_FAN_SPEED_COUNT = 10;
 static const std::string PRANA_FAN_STEP_NAME_STRINGS[] = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10" };
 static const std::vector<std::string> PRANA_FAN_MODES {"Manual", "Auto", "Auto+"};
-static const std::vector<std::string> PRANA_DISPLAY_MODES {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
+static const std::vector<std::string> PRANA_DISPLAY_MODES {"Fan", "Temp inside", "Temp outside", "CO2", "VOC", "Humidity", "Air quality", "Pressure", "unused", "Date", "Time"};
 
 }  // namespace prana_ble
 }  // namespace esphome

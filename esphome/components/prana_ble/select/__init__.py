@@ -29,7 +29,7 @@ CONFIG_SCHEMA = (
 async def to_code(config):
     var = await select.new_select(
         config,
-        options=["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+        options=["Fan", "Temp inside", "Temp outside", "CO2", "VOC", "Humidity", "Air quality", "Pressure", "Date", "Time"]
     )
     await cg.register_component(var, config)
     await register_prana_child(var, config)
