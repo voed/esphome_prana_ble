@@ -11,9 +11,10 @@ This is unofficial component to connect your Prana recuperator with Home Assista
 This project is still work in progress, if you have any problems with it, feel free to open an issue.
 
 What is working for now:
-  - Controlling fans speed. For now only both directions control available.
-  - All sensors that your device may have: voltage, frequency, temperatures, humidity, pressure, TVOC, CO2.
-  - Turn on/off, winter mode, heater switches.
+  - Controlling fans speed
+  - All sensors that your device may have: voltage, frequency, temperatures, humidity, pressure, TVOC, CO2
+  - Turn on/off, winter mode, heater switches
+  - Set current display mode for recuperator's display
 
 
 See [example config](https://github.com/voed/esphome_prana_ble/blob/master/prana_conf_example.yaml) to create your own configuration.
