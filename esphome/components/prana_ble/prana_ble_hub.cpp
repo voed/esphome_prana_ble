@@ -227,6 +227,7 @@ short PranaBLEHub::get_brightness()
 {
   return log2(status.brightness) +1;
 }
+
 void PranaBLEHub::set_brightness(short value)
 {
   if(value == get_brightness())
@@ -240,6 +241,52 @@ void PranaBLEHub::set_brightness(short value)
   send_update_request();
 
 }
+
+short PranaBLEHub::get_display_mode()
+{
+  return status.display_mode;
+}
+
+void PranaBLEHub::set_display_mode(short mode)
+{
+  auto current_mode = get_display_mode();
+  if(mode == current_mode)
+    return;
+
+  //minimizing cmd number by using left/right cmds
+  auto modes = PranaDisplayMode::MODE_COUNT;
+  auto diff_r = (mode - current_mode + modes) % modes;
+  auto diff_l = (current_mode - mode + modes) % modes;
+
+  if(diff_r <= diff_l)
+  {
+    //skipping UNUSED mode
+    if(current_mode < PranaDisplayMode::UNUSED && current_mode + diff_r > PranaDisplayMode::UNUSED)
+    {
+      diff_r -= 1;
+    }
+    for(int i=0; i < diff_r; ++i) {
+
+      send_command(CMD_DISPLAY_RIGHT, false);
+      delay(20);
+    }
+  }
+  else
+  {
+    //skipping UNUSED mode
+    if(current_mode > PranaDisplayMode::UNUSED && current_mode - diff_l < PranaDisplayMode::UNUSED)
+    {
+      diff_l -= 1;
+    }
+    for(int i=0; i < diff_l; ++i) {
+      send_command(CMD_DISPLAY_LEFT, false);
+      delay(20);
+    }
+  }
+
+  send_update_request();
+}
+
 bool PranaBLEHub::send_command(PranaCommand command, bool update) {
   auto packet = new PranaCmdPacket(command);
   auto status = this->send_packet(packet, update);
@@ -525,7 +572,7 @@ void PranaBLEHub::dispatch_status_() {
     send_update_request();
 
     if (this->timeout_ > 0 && diff > this->timeout_ && this->parent()->enabled) {
-      ESP_LOGW(TAG, "[%s] Timed out after %d sec. Retrying...", this->get_name().c_str(), this->timeout_);
+      ESP_LOGW(TAG, "[%s] Timed out after %i sec. Retrying...", this->get_name().c_str(), (int)this->timeout_);
       // set_enabled(false) will only close the connection if state != IDLE.
       this->parent()->set_state(espbt::ClientState::CONNECTING);
       this->parent()->set_enabled(false);

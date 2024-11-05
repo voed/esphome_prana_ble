@@ -32,6 +32,7 @@ class PranaBLESensors : public PranaBLEClient, public Component {
   void set_co2(sensor::Sensor *co2) { co2_ = co2; }
   void set_voltage(sensor::Sensor *voltage) { voltage_ = voltage; }
   void set_frequency(sensor::Sensor *frequency) { frequency_ = frequency; }
+  void set_timestamp(sensor::Sensor *timestamp) { timestamp_ = timestamp; }
 
  protected:
   sensor::Sensor *temp_inside_out_{nullptr};
@@ -44,6 +45,7 @@ class PranaBLESensors : public PranaBLEClient, public Component {
   sensor::Sensor *co2_{nullptr};
   sensor::Sensor *voltage_{nullptr};
   sensor::Sensor *frequency_{nullptr};
+  sensor::Sensor *timestamp_{nullptr};
 };
 
 }  // namespace prana_ble
