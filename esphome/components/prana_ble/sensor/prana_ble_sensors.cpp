@@ -76,6 +76,9 @@ void PranaBLESensors::on_status(const PranaStatusPacket *data) {
     
   if(this->frequency_ != nullptr)
     this->frequency_->publish_state(data->frequency);
+  
+  if(this->timestamp_ != nullptr)
+    this->timestamp_->publish_state(data->timestamp);
 }
 
 

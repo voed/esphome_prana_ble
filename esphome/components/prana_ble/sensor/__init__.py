@@ -15,9 +15,11 @@ from esphome.const import (
     DEVICE_CLASS_FREQUENCY,
     DEVICE_CLASS_HUMIDITY,
     DEVICE_CLASS_TEMPERATURE,
+    DEVICE_CLASS_TIMESTAMP,
     DEVICE_CLASS_PRESSURE,
     DEVICE_CLASS_VOLATILE_ORGANIC_COMPOUNDS,
     DEVICE_CLASS_VOLTAGE,
+    ENTITY_CATEGORY_DIAGNOSTIC,
     STATE_CLASS_MEASUREMENT,
     UNIT_CELSIUS,
     UNIT_HERTZ,
@@ -26,6 +28,7 @@ from esphome.const import (
     UNIT_PERCENT,
     UNIT_VOLT,
     UNIT_HECTOPASCAL,
+    ICON_TIMER
 )
 
 from .. import (
@@ -41,7 +44,7 @@ CONF_INSIDE_OUTLET_TEMP = "temperature_inside_outlet"
 CONF_INSIDE_INLET_TEMP = "temperature_inside_inlet"
 CONF_OUTSIDE_OUTLET_TEMP = "temperature_outside_outlet"
 CONF_OUTSIDE_INLET_TEMP = "temperature_outside_inlet"
-
+CONF_TIMESTAMP = "timestamp"
 
 
 PranaBLESensor = prana_ble_ns.class_("PranaBLESensors", cg.Component)
@@ -110,6 +113,11 @@ CONFIG_SCHEMA = (
                 device_class=DEVICE_CLASS_FREQUENCY,
                 state_class=STATE_CLASS_MEASUREMENT,
             ),
+            cv.Optional(CONF_TIMESTAMP): sensor.sensor_schema(
+                accuracy_decimals=0,
+                device_class=DEVICE_CLASS_TIMESTAMP,
+                entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
+            )
         }
     )
     .extend(cv.COMPONENT_SCHEMA)
@@ -161,3 +169,6 @@ async def to_code(config):
     if CONF_FREQUENCY in config:
         sens = await sensor.new_sensor(config[CONF_FREQUENCY])
         cg.add(var.set_frequency(sens))
+    if CONF_TIMESTAMP in config:
+        sens = await sensor.new_sensor(config[CONF_TIMESTAMP])
+        cg.add(var.set_timestamp(sens))
