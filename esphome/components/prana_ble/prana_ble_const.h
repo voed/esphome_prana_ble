@@ -7,14 +7,6 @@ namespace prana_ble {
 
 static const char *const TAG = "prana_ble";
 
-/// Converts a Prana fan step to a speed percentage, in the range of 5% to 100%.
-inline static uint8_t prana_fan_step_to_speed(const uint8_t fan) {
-  //  0 =  5%
-  // 19 = 100%
-  return 10 * fan + 10;
-}
-inline static uint8_t prana_fan_speed_to_index(const uint8_t speed) { return speed / 10 - 1; }
-
 static const uint8_t PRANA_MAGIC[] = {0xBE, 0xEF};
 static const uint8_t PRANA_CMD_PREFIX = 0x04;
 static const uint8_t PRANA_STATE[] = {0xBE, 0xEF, 0x05, 0x01, 0x00, 0x00, 0x00, 0x00, 0x5A};
@@ -139,7 +131,6 @@ struct PranaStatusPacket {
 }  __attribute__((packed));
 
 static const uint8_t PRANA_FAN_SPEED_COUNT = 10;
-static const std::string PRANA_FAN_STEP_NAME_STRINGS[] = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10" };
 static const std::vector<std::string> PRANA_FAN_MODES {"Manual", "Auto", "Auto+"};
 static const std::vector<std::string> PRANA_DISPLAY_MODES {"Fan", "Temp inside", "Temp outside", "CO2", "VOC", "Humidity", "Air quality", "Pressure", "unused", "Date", "Time"};
 
