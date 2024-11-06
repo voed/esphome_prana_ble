@@ -1,8 +1,0 @@
-{
-    "files.associations": {
-        "xutility": "cpp",
-        "iterator": "cpp",
-        "tuple": "cpp",
-        "type_traits": "cpp"
-    }
-}
