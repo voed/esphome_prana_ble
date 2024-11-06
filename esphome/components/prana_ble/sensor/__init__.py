@@ -16,7 +16,7 @@ from esphome.const import (
     DEVICE_CLASS_HUMIDITY,
     DEVICE_CLASS_TEMPERATURE,
     DEVICE_CLASS_TIMESTAMP,
-    DEVICE_CLASS_PRESSURE,
+    DEVICE_CLASS_ATMOSPHERIC_PRESSURE,
     DEVICE_CLASS_VOLATILE_ORGANIC_COMPOUNDS,
     DEVICE_CLASS_VOLTAGE,
     ENTITY_CATEGORY_DIAGNOSTIC,
@@ -45,7 +45,7 @@ CONF_INSIDE_INLET_TEMP = "temperature_inside_inlet"
 CONF_OUTSIDE_OUTLET_TEMP = "temperature_outside_outlet"
 CONF_OUTSIDE_INLET_TEMP = "temperature_outside_inlet"
 CONF_TIMESTAMP = "timestamp"
-
+UNIT_MMHG = "mmHg"
 
 PranaBLESensor = prana_ble_ns.class_("PranaBLESensors", cg.Component)
 
@@ -84,9 +84,9 @@ CONFIG_SCHEMA = (
                 state_class=STATE_CLASS_MEASUREMENT,
             ),
             cv.Optional(CONF_PRESSURE): sensor.sensor_schema(
-                unit_of_measurement=UNIT_HECTOPASCAL,
+                unit_of_measurement=UNIT_MMHG,
                 accuracy_decimals=0,
-                device_class=DEVICE_CLASS_PRESSURE,
+                device_class=DEVICE_CLASS_ATMOSPHERIC_PRESSURE,
                 state_class=STATE_CLASS_MEASUREMENT,
             ),
             cv.Optional(CONF_CO2): sensor.sensor_schema(
