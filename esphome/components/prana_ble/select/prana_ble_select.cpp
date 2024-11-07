@@ -35,7 +35,8 @@ void PranaBLESelect::on_status(const PranaStatusPacket *data) {
     return;
   if(data->display_mode > PRANA_DISPLAY_MODES.size())
   {
-    ESP_LOGE(TAG, "Incorrect display mode:" data->display_mode);
+    ESP_LOGE(TAG, "Incorrect display mode: %i", data->display_mode);
+    
     return;
   }
   

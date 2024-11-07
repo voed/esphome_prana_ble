@@ -7,19 +7,19 @@ namespace prana_ble {
 
 static const char *const TAG = "prana_ble";
 
-static const uint8_t PRANA_MAGIC[] = {0xBE, 0xEF};
+static const uint16_t PRANA_MAGIC = 0xEFBE;
 static const uint8_t PRANA_CMD_PREFIX = 0x04;
 static const uint8_t PRANA_STATE[] = {0xBE, 0xEF, 0x05, 0x01, 0x00, 0x00, 0x00, 0x00, 0x5A};
 
 struct PranaCmdPacket
 {
-  uint8_t magic[2];
+  uint16_t magic;
   uint8_t prefix;
   uint8_t command;
 
   PranaCmdPacket(uint8_t command)
   {
-    std::copy(std::begin(PRANA_MAGIC), std::end(PRANA_MAGIC), std::begin(magic));
+    magic = PRANA_MAGIC;
     prefix = PRANA_CMD_PREFIX;
     this->command = command;
   }
@@ -75,7 +75,7 @@ enum PranaCommand : uint8_t {
 };
 
 struct PranaStatusPacket {
-  uint8_t magic[2];
+  uint16_t magic;
   uint8_t prefix[2];
   uint32_t timestamp;
   uint8_t suffix;
