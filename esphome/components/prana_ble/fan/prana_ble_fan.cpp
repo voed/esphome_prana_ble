@@ -80,12 +80,19 @@ void PranaBLEFan::control(const fan::FanCall &call) {
 
 void PranaBLEFan::on_status(const PranaStatusPacket *data) {
   bool did_change = false;
-
-  if(this->fan_mode != data->fan_mode || this->preset_mode.empty())
+  auto mode = data->fan_mode;
+  if(this->fan_mode != mode || this->preset_mode.empty())
   {
-    this->preset_mode = PRANA_FAN_MODES[data->fan_mode];
+    ESP_LOGD(TAG, "New fan mode: %i", mode);
+    if(mode > PRANA_FAN_MODES.size())
+    {
+      ESP_LOGE(TAG, "Incorrect fan mode: %i", mode);
+      return;
+    }
 
-    this->fan_mode = data->fan_mode;
+    this->preset_mode = PRANA_FAN_MODES[mode];
+
+    this->fan_mode = mode;
     did_change = true;
   }
 

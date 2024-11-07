@@ -33,7 +33,12 @@ void PranaBLESelect::control(const std::string &value) {
 void PranaBLESelect::on_status(const PranaStatusPacket *data) {
   if(data == nullptr)
     return;
-
+  if(data->display_mode > PRANA_DISPLAY_MODES.size())
+  {
+    ESP_LOGE(TAG, "Incorrect display mode:" data->display_mode);
+    return;
+  }
+  
   this->publish_state(PRANA_DISPLAY_MODES[data->display_mode]);
 }
 void PranaBLESelect::dump_config() {
