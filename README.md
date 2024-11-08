@@ -21,4 +21,4 @@ See [example config](https://github.com/voed/esphome_prana_ble/blob/master/prana
 
 Join [Telegram chat](https://t.me/esphome_prana) for discussions.
 
-If you want to support this project, you can do a [donation via Monobank](https://send.monobank.ua/jar/Lw9tQQ2XL)
+If you want to support this project, you can do a donation [via Monobank](https://send.monobank.ua/jar/Lw9tQQ2XL) or Paypal `voed@i.ua`
