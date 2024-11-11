@@ -119,6 +119,7 @@ fan:
     prana_ble_id: prana_client
     has_auto: true #if your recuperator does not have auto/auto+ options, change this to false
     name: In/Out fans # use fan_lock switch to control separate fans
+    speed_count: 10 #some recuperators has less than 10 speeds. You can set it for inlet/outlet fans aswell
     fan_type: BOTH
 
   - platform: prana_ble
