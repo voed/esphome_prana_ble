@@ -19,7 +19,7 @@ PranaFanMode get_mode_from_string(const std::string& mode_string)
 }
 void PranaBLEFan::setup()
 {
-  this->traits_ = fan::FanTraits(false, true, false, PRANA_FAN_SPEED_COUNT);
+  this->traits_ = fan::FanTraits(false, true, false, speed_count_);
   if(has_auto_)
   {
     std::set<std::string> modes(PRANA_FAN_MODES.begin(), PRANA_FAN_MODES.end());
