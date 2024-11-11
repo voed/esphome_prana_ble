@@ -5,7 +5,8 @@ import esphome.config_validation as cv
 from esphome.components import fan
 from esphome.const import (
     CONF_ID,
-    CONF_NAME
+    CONF_NAME,
+    CONF_SPEED_COUNT
 )
 from .. import (
     PRANA_BLE_CLIENT_SCHEMA,
@@ -37,6 +38,7 @@ CONFIG_SCHEMA = (
         {
             cv.GenerateID(): cv.declare_id(PranaBLEFan),
             cv.Optional(CONF_HAS_AUTO) : cv.boolean,
+            cv.Optional(CONF_SPEED_COUNT, default=10) : cv.int_range(1, 10),
             cv.Required(CONF_FAN_TYPE) : cv.enum(PRANA_FAN_TYPE, upper=True)
         }
     )
@@ -51,5 +53,6 @@ async def to_code(config):
     await cg.register_component(var, config)
     cg.add(var.set_has_auto(config[CONF_HAS_AUTO]))
     cg.add(var.set_fan_type(config[CONF_FAN_TYPE]))
+    cg.add(var.set_speed_count(config[CONF_SPEED_COUNT]))
     await register_prana_child(var, config)
 

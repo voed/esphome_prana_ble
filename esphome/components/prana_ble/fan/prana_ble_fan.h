@@ -26,14 +26,15 @@ class PranaBLEFan : public fan::Fan, public PranaBLEClient, public Component {
   
   fan::FanTraits get_traits() override { return this->traits_; }
 
-  void set_has_auto(bool has_auto) {has_auto_ = has_auto;}
-
+  void set_has_auto(bool has_auto) { has_auto_ = has_auto; }
   void set_fan_type(PranaFan fan_type) { fan_type_ = fan_type; }
+  void set_speed_count(int8_t count) { speed_count_ = count; }
  protected:
   void control(const fan::FanCall &call) override;
   PranaFanMode fan_mode;
   fan::FanTraits traits_;
   PranaFan fan_type_;
+  int8_t speed_count_{10};
   bool has_auto_{false};
 };
 

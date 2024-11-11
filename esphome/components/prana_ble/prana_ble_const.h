@@ -130,7 +130,7 @@ struct PranaStatusPacket {
   uint8_t display_mode;//99
 }  __attribute__((packed));
 
-static const uint8_t PRANA_FAN_SPEED_COUNT = 10;
+
 static const std::vector<std::string> PRANA_FAN_MODES {"Manual", "Auto", "Auto+"};
 static const std::vector<std::string> PRANA_DISPLAY_MODES {"Fan", "Temp inside", "Temp outside", "CO2", "VOC", "Humidity", "Air quality", "Pressure", "unused", "Date", "Time"};
 
