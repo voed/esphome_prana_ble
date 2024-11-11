@@ -53,8 +53,6 @@ void PranaBLESwitch::write_state(bool state) {
       break;
     }
   }
-
-  this->publish_state(state);
 }
 
 void PranaBLESwitch::on_status(const PranaStatusPacket *data) {

@@ -76,7 +76,7 @@ void PranaBLEHub::set_fans_locked(bool locked)
   if(locked != fans_locked_)
   {
     
-    send_command(CMD_FAN_LOCK, false);
+    send_command(CMD_FAN_LOCK, true);
     
   }
 }
