@@ -47,8 +47,8 @@ async def register_prana_child(var, config):
 
 
 async def to_code(config):
-    if config[CONF_UPDATE_INTERVAL] < cv.time_period("1s"):
-        raise cv.Invalid("Update interval must be more than 1s")
+    if config[CONF_UPDATE_INTERVAL] < cv.time_period("0.1s"):
+        raise cv.Invalid("Update interval must be more than 0.1s")
     
     var = cg.new_Pvariable(config[CONF_ID])
     await cg.register_component(var, config)
