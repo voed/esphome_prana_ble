@@ -20,7 +20,7 @@ PranaFanMode get_mode_from_string(const std::string& mode_string)
 void PranaBLEFan::setup()
 {
   this->traits_ = fan::FanTraits(false, true, false, speed_count_);
-  if(has_auto_)
+  if(this->has_auto_)
   {
     std::set<std::string> modes(PRANA_FAN_MODES.begin(), PRANA_FAN_MODES.end());
     this->traits_.set_supported_preset_modes(modes);
@@ -64,7 +64,7 @@ void PranaBLEFan::control(const fan::FanCall &call) {
       did_change = true;
     }
   }
-  if(!call.get_preset_mode().empty() || this->preset_mode != call.get_preset_mode())
+  if(this->has_auto_ && (!call.get_preset_mode().empty() || this->preset_mode != call.get_preset_mode()))
   {
     ESP_LOGD(TAG, "Changing preset from %s to %s", this->preset_mode.c_str(), call.get_preset_mode().c_str());
     auto mode = get_mode_from_string(call.get_preset_mode());
@@ -80,21 +80,25 @@ void PranaBLEFan::control(const fan::FanCall &call) {
 
 void PranaBLEFan::on_status(const PranaStatusPacket *data) {
   bool did_change = false;
-  auto mode = data->fan_mode;
-  if(this->fan_mode != mode || this->preset_mode.empty())
+  if(this->has_auto_)
   {
-    ESP_LOGD(TAG, "New fan mode: %i", mode);
-    if(mode > PRANA_FAN_MODES.size())
+    auto mode = data->fan_mode;
+    if(this->fan_mode != mode || this->preset_mode.empty())
     {
-      ESP_LOGE(TAG, "Incorrect fan mode: %i", mode);
-      return;
+      ESP_LOGD(TAG, "New fan mode: %i", mode);
+      if(mode > PRANA_FAN_MODES.size())
+      {
+        ESP_LOGE(TAG, "Incorrect fan mode: %i", mode);
+        return;
+      }
+
+      this->preset_mode = PRANA_FAN_MODES[mode];
+
+      this->fan_mode = mode;
+      did_change = true;
     }
-
-    this->preset_mode = PRANA_FAN_MODES[mode];
-
-    this->fan_mode = mode;
-    did_change = true;
   }
+
 
 
   switch(fan_type_)
