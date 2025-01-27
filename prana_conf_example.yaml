@@ -14,6 +14,10 @@ esp32:
   board: esp32dev
   framework: # Strongly recommended to use IDF framework instead of arduino. 
     type: esp-idf
+    #version: 5.1.2 #Optionally, you can even specify a newer IDF version. It may contain some fixes and work better in some cases.
+    #platform_version: 6.5.0
+    #sdkconfig_options:
+    #  CONFIG_ESPTOOLPY_FLASHSIZE_4MB: y
 
 external_components:
   - source: ${external_components_source}
@@ -50,26 +54,25 @@ wifi:
 #   - platform: ble_scanner
 #     name: "BLE Devices Scanner"
     
-# TODO: try to merge it with "prana_ble"
 # TODO: make option to add by device name?
 ble_client:
   - mac_address: ${mac_address_01}
     id: prana
 #You can use multiple devices by specifying their MACS and ids
-  - mac_address: ${mac_address_02}
-    id: prana2
+  #- mac_address: ${mac_address_02} #Uncomment if you want to connect multiple recuperators to this ESP
+  #  id: prana2
 
 prana_ble:
   - id: prana_client
     ble_client_id: prana
-  - id: prana_client2
-    ble_client_id: prana2
+  #- id: prana_client2 #Uncomment if you want to connect multiple recuperators to this ESP
+  #  ble_client_id: prana2
 
 sensor:
   - platform: prana_ble
     prana_ble_id: prana_client
 
-#temperature sensors
+    #temperature sensors
     temperature_inside_inlet: # top left sensor in Prana app
       name: "Temperature inside inlet" 
     temperature_inside_outlet: # bottom left sensor in Prana app
@@ -88,13 +91,11 @@ sensor:
     tvoc:
       name: "TVOC"
       
-# voltage and frequency sensors seems only available for old devices with 220V fans
+    # voltage and frequency sensors seems only available for old devices with 220V fans
     voltage:
       name: "Voltage"
     frequency:
       name: "Frequency"
-
-
     timestamp: # Current date and time from your recuperator. Not sure how it can be useful, but it's here. Not available on some old devices.
       name: "Timestamp"
 
@@ -110,36 +111,33 @@ switch:
       name: Heating
     winter_mode:  # turn on/off "winter" mode
       name: Winter mode
-    fan_lock:
+    fan_lock: # turn off to control in/out fans separately
       name: Fan lock
 
-# TODO: make this more readable
 fan:
   - platform: prana_ble
     prana_ble_id: prana_client
-    has_auto: true #if your recuperator does not have auto/auto+ options, change this to false
-    name: In/Out fans # use fan_lock switch to control separate fans
-    speed_count: 10 #some recuperators has less than 10 speeds. You can set it for inlet/outlet fans aswell
-    fan_type: BOTH
-
-  - platform: prana_ble
-    prana_ble_id: prana_client
-    has_auto: true
-    name: Inlet fan
-    fan_type: INLET
-
-  - platform: prana_ble
-    prana_ble_id: prana_client
-    has_auto: true
-    name: Outlet fan
-    fan_type: OUTLET
+    fan_in:
+      name: Inlet fan
+    fan_out:
+      name: Outlet fan
+    fan_both: # use fan_lock switch to control separate fans
+      name: In/Out fans 
+    speed_count: 10 # how many speeds your recuperator have. Default is 10
 
 number:
   - platform: prana_ble
     prana_ble_id: prana_client
     name: Display brightness
 
-select: #select what you want to display on your recuperator: "Fan", "Temp inside", "Temp outside", "CO2", "VOC", "Humidity", "Air quality(probably)", "Pressure", "Date", "Time"
+select:
   - platform: prana_ble
     prana_ble_id: prana_client
-    name: "Display mode"
+    
+    # select what to display on your recuperator screen: "Fan", "Temp inside", "Temp outside", "CO2", "VOC", "Humidity", "Air quality", "Pressure", "Date", "Time"
+    display_mode:
+      name: "Display mode" 
+
+    # switch between Auto, Auto+ and Manual modes
+    fan_mode:
+      name: "Fan mode"
