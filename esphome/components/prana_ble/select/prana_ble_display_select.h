@@ -10,7 +10,7 @@
 namespace esphome {
 namespace prana_ble {
 
-class PranaBLESelect : public select::Select, public PranaBLEClient, public Component {
+class PranaBLEDisplaySelect : public select::Select, public PranaBLEClient, public Component {
  public:
   void dump_config() override;
   float get_setup_priority() const override { return setup_priority::AFTER_WIFI; }
