@@ -55,11 +55,10 @@ void PranaBLEFan::control(const fan::FanCall &call) {
 }
 
 void PranaBLEFan::on_status(const PranaStatusPacket *data) {
-  bool did_change = false;
+  uint8_t data_speed = this->speed;
+  bool enabled = this->state;
   switch(fan_type_)
   {
-    uint8_t data_speed;
-    bool enabled;
     case PranaFan::FAN_IN:
     {
       data_speed = data->speed_in / 10;
@@ -82,17 +81,13 @@ void PranaBLEFan::on_status(const PranaStatusPacket *data) {
 
   if (data_speed != this->speed) {
     this->speed = data_speed;
-    did_change = true;
+    this->publish_state();
   }
   if (enabled != this->state) {
     this->state = enabled;
-    did_change = true;
-  }
-
-
-  if (did_change) {
     this->publish_state();
   }
+
 }
 }  // namespace prana_ble
 }  // namespace esphome
