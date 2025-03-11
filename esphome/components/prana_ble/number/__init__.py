@@ -14,13 +14,16 @@ from .. import (
 DEPENDENCIES = ["prana_ble"]
 CODEOWNERS = ["@voed"]
 
-
+ICON_BRIGHTNESS = "mdi:television-ambient-light"
 
 PranaBLENumber = prana_ble_ns.class_("PranaBLENumber", number.Number, cg.Component)
 
 
 CONFIG_SCHEMA = (
-    number.number_schema(PranaBLENumber)
+    number.number_schema(
+        PranaBLENumber,
+        icon=ICON_BRIGHTNESS
+    )
     .extend(cv.COMPONENT_SCHEMA)
     .extend(PRANA_BLE_CLIENT_SCHEMA)
 )

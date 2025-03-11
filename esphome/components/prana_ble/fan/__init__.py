@@ -63,11 +63,22 @@ CONF_FAN_IN = "fan_in"
 CONF_FAN_OUT = "fan_out"
 CONF_FAN_BOTH = "fan_both"
 
+ICON_FAN_CHEVRON_UP = "mdi:fan-chevron-up"
+ICON_FAN_CHEVRON_DOWN = "mdi:fan-chevron-down"
+
+
 CONFIG_SCHEMA = (
     cv.Schema(
         {
-            cv.Optional(CONF_FAN_IN): fan_schema(PranaBLEFan),
-            cv.Optional(CONF_FAN_OUT): fan_schema(PranaBLEFan),
+            cv.Optional(CONF_FAN_IN): fan_schema(
+                PranaBLEFan,
+                icon=ICON_FAN_CHEVRON_DOWN
+            ),
+            cv.Optional(CONF_FAN_OUT): fan_schema(
+                PranaBLEFan,
+                icon=ICON_FAN_CHEVRON_UP
+            ),
+
             cv.Optional(CONF_FAN_BOTH): fan_schema(PranaBLEFan),
             cv.Optional(CONF_SPEED_COUNT, default=10): cv.int_range(1, 10)
         }
