@@ -15,6 +15,7 @@ CONF_FAN_MODE = "fan_mode"
 
 ICON_DISPLAY = "mdi:unfold-more-vertical"
 ICON_FAN_AUTO="mdi:fan-auto"
+
 PranaBLEDisplaySelect = prana_ble_ns.class_("PranaBLEDisplaySelect", select.Select, cg.Component)
 PranaBLEFanSelect = prana_ble_ns.class_("PranaBLEFanSelect", select.Select, cg.Component)
 
@@ -29,6 +30,7 @@ CONFIG_SCHEMA = (
                 PranaBLEFanSelect,
                 icon=ICON_FAN_AUTO
             ),
+
         }
     )
     .extend(cv.COMPONENT_SCHEMA)
