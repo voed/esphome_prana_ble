@@ -47,6 +47,9 @@ CONF_OUTSIDE_INLET_TEMP = "temperature_outside_inlet"
 CONF_TIMESTAMP = "timestamp"
 UNIT_MMHG = "mmHg"
 
+ICON_THERMOMETER_CHEVRON_UP = "mdi:thermometer-chevron-up"
+ICON_THERMOMETER_CHEVRON_DOWN = "mdi:thermometer-chevron-down"
+
 PranaBLESensor = prana_ble_ns.class_("PranaBLESensors", cg.Component)
 
 CONFIG_SCHEMA = (
@@ -58,24 +61,28 @@ CONFIG_SCHEMA = (
                 accuracy_decimals=1,
                 device_class=DEVICE_CLASS_TEMPERATURE,
                 state_class=STATE_CLASS_MEASUREMENT,
+                icon=ICON_THERMOMETER_CHEVRON_UP
             ),
             cv.Optional(CONF_INSIDE_INLET_TEMP): sensor.sensor_schema(
                 unit_of_measurement=UNIT_CELSIUS,
                 accuracy_decimals=1,
                 device_class=DEVICE_CLASS_TEMPERATURE,
                 state_class=STATE_CLASS_MEASUREMENT,
+                icon=ICON_THERMOMETER_CHEVRON_DOWN
             ),
             cv.Optional(CONF_OUTSIDE_OUTLET_TEMP): sensor.sensor_schema(
                 unit_of_measurement=UNIT_CELSIUS,
                 accuracy_decimals=1,
                 device_class=DEVICE_CLASS_TEMPERATURE,
                 state_class=STATE_CLASS_MEASUREMENT,
+                icon=ICON_THERMOMETER_CHEVRON_UP
             ),
             cv.Optional(CONF_OUTSIDE_INLET_TEMP): sensor.sensor_schema(
                 unit_of_measurement=UNIT_CELSIUS,
                 accuracy_decimals=1,
                 device_class=DEVICE_CLASS_TEMPERATURE,
                 state_class=STATE_CLASS_MEASUREMENT,
+                icon=ICON_THERMOMETER_CHEVRON_DOWN
             ),
             cv.Optional(CONF_HUMIDITY): sensor.sensor_schema(
                 unit_of_measurement=UNIT_PERCENT,
@@ -106,12 +113,14 @@ CONFIG_SCHEMA = (
                 accuracy_decimals=0,
                 device_class=DEVICE_CLASS_VOLTAGE,
                 state_class=STATE_CLASS_MEASUREMENT,
+                entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
             ),
             cv.Optional(CONF_FREQUENCY): sensor.sensor_schema(
                 unit_of_measurement=UNIT_HERTZ,
                 accuracy_decimals=0,
                 device_class=DEVICE_CLASS_FREQUENCY,
                 state_class=STATE_CLASS_MEASUREMENT,
+                entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
             ),
             cv.Optional(CONF_TIMESTAMP): sensor.sensor_schema(
                 accuracy_decimals=0,

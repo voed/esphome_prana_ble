@@ -5,6 +5,7 @@ import esphome.config_validation as cv
 from esphome.components import switch
 from esphome.const import (
     CONF_ID,
+    ICON_POWER
 )
 from .. import (
     PRANA_BLE_CLIENT_SCHEMA,
@@ -26,17 +27,34 @@ CONF_AUTO_MODE = "auto_mode"
 CONF_CONNECT = "connect"
 CONF_FAN_LOCK = "fan_lock"
 
-
+ICON_BT_CONNECT="mdi:bluetooth-connect"
+ICON_HEAT="mdi:heat-wave"
+ICON_WINTER="mdi:snowflake-thermometer"
+ICON_LOCK="mdi:lock"
 CONFIG_SCHEMA = (
     cv.Schema(
         {
             #cv.GenerateID(): cv.declare_id(PranaBLESwitch),
-            cv.Required(CONF_CONNECT): switch.switch_schema(PranaBLESwitch),
-            cv.Optional(CONF_ENABLE): switch.switch_schema(PranaBLESwitch),
-            cv.Optional(CONF_HEATING): switch.switch_schema(PranaBLESwitch),
-            cv.Optional(CONF_WINTER_MODE): switch.switch_schema(PranaBLESwitch),
-            cv.Optional(CONF_AUTO_MODE): switch.switch_schema(PranaBLESwitch),
-            cv.Optional(CONF_FAN_LOCK): switch.switch_schema(PranaBLESwitch)
+            cv.Required(CONF_CONNECT): switch.switch_schema(
+                PranaBLESwitch,
+                icon=ICON_BT_CONNECT
+            ),
+            cv.Optional(CONF_ENABLE): switch.switch_schema(
+                PranaBLESwitch,
+                icon=ICON_POWER
+            ),
+            cv.Optional(CONF_HEATING): switch.switch_schema(
+                PranaBLESwitch,
+                icon=ICON_HEAT
+            ),
+            cv.Optional(CONF_WINTER_MODE): switch.switch_schema(
+                PranaBLESwitch,
+                icon=ICON_WINTER
+            ),
+            cv.Optional(CONF_FAN_LOCK): switch.switch_schema(
+                PranaBLESwitch,
+                icon=ICON_LOCK
+            )
         }
     )
     .extend(cv.COMPONENT_SCHEMA)

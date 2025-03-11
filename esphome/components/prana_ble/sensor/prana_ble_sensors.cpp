@@ -59,8 +59,12 @@ void PranaBLESensors::on_status(const PranaStatusPacket *data) {
   }
 
   if(this->humidity_ != nullptr)
-    this->humidity_->publish_state(data->humidity - 128);
-
+  {
+    auto humidity = data->humidity - 128;
+    if(humidity < 100 && humidity > 0)
+      this->humidity_->publish_state(humidity);
+  }
+    
   //TODO: add validation
   if(this->pressure_ != nullptr)
     this->pressure_->publish_state(512 + data->pressure);
@@ -71,13 +75,13 @@ void PranaBLESensors::on_status(const PranaStatusPacket *data) {
   if(this->co2_ != nullptr)
     this->co2_->publish_state(byteswap(data->co2) & 0x3fff);
 
-  if(this->voltage_ != nullptr)
+  if(this->voltage_ != nullptr && data->voltage > 0)
     this->voltage_->publish_state(data->voltage);
     
-  if(this->frequency_ != nullptr)
+  if(this->frequency_ != nullptr && data->frequency > 0)
     this->frequency_->publish_state(data->frequency);
   
-  if(this->timestamp_ != nullptr)
+  if(this->timestamp_ != nullptr && data->timestamp > 0)
     this->timestamp_->publish_state(data->timestamp);
 }
 
