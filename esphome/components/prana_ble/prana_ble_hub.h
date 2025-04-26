@@ -58,7 +58,8 @@ class PranaBLEHub : public esphome::ble_client::BLEClientNode, public PollingCom
   bool get_fans_locked();
 
   short get_fan_speed(PranaFan fan);
-  bool set_fan_speed(PranaFan fan, short new_speed);
+  bool set_fan_speed(PranaFan fan, short new_speed, bool direct=false);
+  bool set_fan_speed_direct(PranaFan fan, short new_speed);
 
   bool set_fan_off(PranaFan fan);
   bool set_fan_step(PranaFan fan, bool up);
@@ -74,7 +75,7 @@ class PranaBLEHub : public esphome::ble_client::BLEClientNode, public PollingCom
 
   /** Send the `button`. */
   bool send_command(const PranaCommand command, bool update=false);
-
+  bool send_command(const uint8_t command, bool update=false);
 
   /** @return `true` if the `BLEClient::node_state` is `ClientState::ESTABLISHED`. */
   bool is_connected() { return this->node_state == espbt::ClientState::ESTABLISHED; }
