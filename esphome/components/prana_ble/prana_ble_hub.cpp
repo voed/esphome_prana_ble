@@ -7,7 +7,7 @@ namespace prana_ble {
 
 
 
-static const LogString *prana_cmd_to_string(PranaCommand command) {
+static const LogString *prana_cmd_to_string(uint8_t command) {
   switch (command) {
     case CMD_POWER_OFF:
       return LOG_STR("OFF");
@@ -86,7 +86,7 @@ bool PranaBLEHub::get_fans_locked()
   return fans_locked_;
 }
 
-bool PranaBLEHub::set_fan_speed(PranaFan fan, short new_speed)
+bool PranaBLEHub::set_fan_speed(PranaFan fan, short new_speed, bool direct)
 {
   auto speed_diff = new_speed - get_fan_speed(fan);
 
@@ -99,12 +99,42 @@ bool PranaBLEHub::set_fan_speed(PranaFan fan, short new_speed)
   }
   status.speed = new_speed * 10;
 
-  for(int i=1; i <= abs(speed_diff); i++)
+  if(direct)
   {
-    set_fan_step(fan, speed_diff > 0);
-    delay(20);
+    return set_fan_speed_direct(fan, new_speed-1);
   }
+  else 
+  {
+    for(int i=1; i <= abs(speed_diff); i++)
+    {
+      set_fan_step(fan, speed_diff > 0);
+      delay(20);
+    }
+  }
+
   return true;
+}
+bool PranaBLEHub::set_fan_speed_direct(PranaFan fan, short new_speed)
+{
+  switch(fan)
+  {
+    case FAN_BOTH:
+    {
+      return send_command(cmd_fan_speed[new_speed], true);
+      break;
+    }
+    case FAN_IN:
+    {
+      return send_command(cmd_fan_in_speed[new_speed], true);
+      break;
+    }
+    case FAN_OUT:
+    {
+      return send_command(cmd_fan_out_speed[new_speed], true);
+      break;
+    }
+  }
+  return false;
 }
 
 
@@ -287,7 +317,8 @@ void PranaBLEHub::set_display_mode(short mode)
   send_update_request();
 }
 
-bool PranaBLEHub::send_command(PranaCommand command, bool update) {
+
+bool PranaBLEHub::send_command(uint8_t command, bool update) {
   auto packet = new PranaCmdPacket(command);
   auto status = this->send_packet(packet, update);
 
@@ -301,6 +332,10 @@ bool PranaBLEHub::send_command(PranaCommand command, bool update) {
              LOG_STR_ARG(prana_cmd_to_string(command)));
   }
   return status == 0;
+}
+
+bool PranaBLEHub::send_command(PranaCommand command, bool update) {
+  return send_command((uint8_t)command, update);
 }
 
 uint8_t PranaBLEHub::send_packet(PranaCmdPacket *pkt, bool update)

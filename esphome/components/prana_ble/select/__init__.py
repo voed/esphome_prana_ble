@@ -30,7 +30,6 @@ CONFIG_SCHEMA = (
                 PranaBLEFanSelect,
                 icon=ICON_FAN_AUTO
             ),
-
         }
     )
     .extend(cv.COMPONENT_SCHEMA)

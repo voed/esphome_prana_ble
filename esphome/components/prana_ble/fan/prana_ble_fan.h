@@ -28,11 +28,13 @@ class PranaBLEFan : public fan::Fan, public PranaBLEClient, public Component {
 
   void set_fan_type(PranaFan fan_type) { fan_type_ = fan_type; }
   void set_speed_count(int8_t count) { speed_count_ = count; }
+  void set_fan_direct(bool direct) { direct_ = direct; }
  protected:
   void control(const fan::FanCall &call) override;
   PranaFanMode fan_mode;
   fan::FanTraits traits_;
   PranaFan fan_type_;
+  bool direct_;
   int8_t speed_count_{10};
 };
 

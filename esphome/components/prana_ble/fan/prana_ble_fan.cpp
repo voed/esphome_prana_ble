@@ -44,7 +44,7 @@ void PranaBLEFan::control(const fan::FanCall &call) {
     if (speed > 0) {
       this->speed = speed;
       ESP_LOGW(TAG, "Setting fan speed %d", speed);
-      this->parent_->set_fan_speed(fan_type_, speed);
+      this->parent_->set_fan_speed(fan_type_, speed, direct_);
       did_change = true;
     }
   }
