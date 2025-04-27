@@ -62,6 +62,7 @@ CONF_FAN_TYPE = "fan_type"
 CONF_FAN_IN = "fan_in"
 CONF_FAN_OUT = "fan_out"
 CONF_FAN_BOTH = "fan_both"
+
 CONF_DIRECT = "direct_control"
 ICON_FAN_CHEVRON_UP = "mdi:fan-chevron-up"
 ICON_FAN_CHEVRON_DOWN = "mdi:fan-chevron-down"
@@ -77,9 +78,11 @@ CONFIG_SCHEMA = (
                 PranaBLEFan,
                 icon=ICON_FAN_CHEVRON_UP
             ),
+
             cv.Optional(CONF_FAN_BOTH): fan_schema(PranaBLEFan),
             cv.Optional(CONF_SPEED_COUNT, default=10): cv.int_range(1, 10),
             cv.Optional(CONF_DIRECT, default=False): cv.boolean
+
         }
     )
     .extend(cv.COMPONENT_SCHEMA)
@@ -115,3 +118,5 @@ async def to_code(config):
         cg.add(var.set_speed_count(config[CONF_SPEED_COUNT]))
         cg.add(var.set_fan_direct(config[CONF_DIRECT]))
         await register_prana_child(var, config)
+        await register_prana_child(var, config)
+
