@@ -16,7 +16,6 @@ What is working for now:
   - Turn on/off, winter mode, heater switches
   - Set current display mode for recuperator's display
 
-__Does not support password protected devices__
 
 See [example config](https://github.com/voed/esphome_prana_ble/blob/master/prana_conf_example.yaml) to create your own configuration.
 
