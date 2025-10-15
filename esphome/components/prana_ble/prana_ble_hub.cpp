@@ -55,7 +55,6 @@ bool PranaBLEHub::command_connect()
   this->parent()->set_state(espbt::ClientState::CONNECTING);
   this->parent()->set_enabled(false);
   this->parent()->set_enabled(true);
-  this->parent()->set_state(espbt::ClientState::READY_TO_CONNECT);
   return true;
 }
 bool PranaBLEHub::command_disconnect() 
