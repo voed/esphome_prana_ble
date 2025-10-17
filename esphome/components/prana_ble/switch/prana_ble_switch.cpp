@@ -44,6 +44,8 @@ void PranaBLESwitch::write_state(bool state) {
       }
       else
         this->parent_->command_disconnect();
+
+      this->publish_state(state);
       break;
     }
     case PranaSwitchType::FAN_LOCK:
@@ -56,7 +58,7 @@ void PranaBLESwitch::write_state(bool state) {
 }
 
 void PranaBLESwitch::on_status(const PranaStatusPacket *data) {
-    if(data == nullptr)
+  if(data == nullptr)
     return;
   switch(switch_type_)
   {

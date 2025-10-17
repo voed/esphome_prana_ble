@@ -52,7 +52,6 @@ static const LogString *prana_cmd_to_string(uint8_t command) {
 bool PranaBLEHub::command_connect()
 { 
   keep_connected_ = true;
-  this->parent()->set_state(espbt::ClientState::CONNECTING);
   this->parent()->set_enabled(false);
   this->parent()->set_enabled(true);
   return true;
@@ -62,7 +61,7 @@ bool PranaBLEHub::command_disconnect()
   if(keep_connected_ == true)
   {
     keep_connected_ = false;
-    //this->parent()->set_state(espbt::ClientState::IDLE);
+
     this->parent()->set_enabled(false);
     return true;
   }
@@ -518,8 +517,7 @@ void PranaBLEHub::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t 
       PranaStatusPacket* packet = (PranaStatusPacket*)param->notify.value;
       if (packet != nullptr && packet->magic == PRANA_MAGIC) {
         this->status = *packet;
-        ESP_LOGD(TAG, "[%s] Notifying %d children of latest status @%p.", this->get_name().c_str(), this->children_.size(),
-                packet);
+        ESP_LOGD(TAG, "[%s] Notifying %d children.", this->get_name().c_str(), this->children_.size());
         for (auto *child : this->children_) {
           child->on_status(packet);
         }
@@ -561,7 +559,7 @@ uint8_t PranaBLEHub::write_notify_config_descriptor_(bool enable) {
     ESP_LOGW(TAG, "esp_ble_gattc_write_char_descr error, status=%d", status);
     return status;
   }
-  ESP_LOGD(TAG, "[%s] wrote notify=%s to status config 0x%04x, for conn %d", this->get_name().c_str(),
+  ESP_LOGV(TAG, "[%s] wrote notify=%s to status config 0x%04x, for conn %d", this->get_name().c_str(),
            enable ? "true" : "false", handle, this->parent_->get_conn_id());
   return ESP_GATT_OK;
 }
@@ -593,13 +591,13 @@ void PranaBLEHub::dispatch_status_() {
   if(!keep_connected_)
   {
 
-    ESP_LOGD(TAG, "[%s] Connection disabled by user. Waiting for enabling...", this->get_name().c_str());
+    ESP_LOGV(TAG, "[%s] Connection disabled by user. Waiting for enabling...", this->get_name().c_str());
     return;
   }
 
   if (!this->is_connected()) 
   {
-    ESP_LOGD(TAG, "[%s] Not connected, will not send status.", this->get_name().c_str());
+    ESP_LOGV(TAG, "[%s] Not connected, will not send status.", this->get_name().c_str());
   } else {
     uint32_t diff = millis() - this->last_notify_;
     send_update_request();
