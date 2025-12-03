@@ -317,8 +317,8 @@ void PranaBLEHub::set_display_mode(short mode)
 
 
 bool PranaBLEHub::send_command(uint8_t command, bool update) {
-  auto packet = new PranaCmdPacket(command);
-  auto status = this->send_packet(packet, update);
+  PranaCmdPacket packet(command);
+  auto status = this->send_packet(&packet, update);
 
   if (status) 
   {
@@ -338,7 +338,7 @@ bool PranaBLEHub::send_command(PranaCommand command, bool update) {
 
 uint8_t PranaBLEHub::send_packet(PranaCmdPacket *pkt, bool update)
 {
-  uint8_t result = this->send_data((uint8_t *) pkt, sizeof(pkt));
+  uint8_t result = this->send_data((uint8_t *) pkt, sizeof(PranaCmdPacket));
   if(update && result!= 0)
   {
     delay(50);
@@ -349,10 +349,7 @@ uint8_t PranaBLEHub::send_packet(PranaCmdPacket *pkt, bool update)
 }
 
 uint8_t PranaBLEHub::send_data(uint8_t data[], uint8_t len) {
-  char buffer [40];
-  for(int j = 0; j < len; j++)
-    sprintf(&buffer[2*j], "%02X", data[j]);
-  ESP_LOGD(TAG, buffer);
+  ESP_LOGD(TAG, "Send data: %s", format_hex_pretty(data, len).c_str());
   auto status = esp_ble_gattc_write_char(
                         this->parent_->get_gattc_if(), 
                         this->parent()->get_conn_id(),
