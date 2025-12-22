@@ -29,7 +29,7 @@ class PranaBLESwitch : public switch_::Switch, public PranaBLEClient, public Com
 
   /* PranaClient status update */
   void on_status(const PranaStatusPacket *data) override;
-  void on_prana_state(bool is_ready) override{};
+  void on_prana_state(bool is_ready) override {};
   std::string describe() override;
   void set_switch_type(PranaSwitchType type) { switch_type_ = type;}
  protected:

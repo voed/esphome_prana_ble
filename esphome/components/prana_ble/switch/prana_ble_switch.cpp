@@ -28,12 +28,12 @@ void PranaBLESwitch::write_state(bool state) {
 
     case PranaSwitchType::HEAT:
     {
-      this->parent_->command_heating();
+      parent_->set_heating(state);
       break;
     }
     case PranaSwitchType::WINTER:
     {
-      this->parent_->command_winter_mode();
+      parent_->set_winter_mode(state);
       break;
     }
     case PranaSwitchType::CONNECT:
@@ -91,7 +91,6 @@ void PranaBLESwitch::on_status(const PranaStatusPacket *data) {
     }
   }
 }
-
 
 }  // namespace prana_ble
 }  // namespace esphome

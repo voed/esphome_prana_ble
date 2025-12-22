@@ -315,7 +315,24 @@ void PranaBLEHub::set_display_mode(short mode)
   send_update_request();
 }
 
-
+bool PranaBLEHub::set_winter_mode(bool state)
+{
+  if(state != status.winter_mode)
+  {
+    send_command(CMD_WINTER_MODE, true);
+    return true;
+  }
+  return false;
+}
+bool PranaBLEHub::set_heating(bool state)
+{
+  if(state != status.heating_on)
+  {
+    send_command(CMD_HEATING, true);
+    return true;
+  }
+  return false;
+}
 bool PranaBLEHub::send_command(uint8_t command, bool update) {
   PranaCmdPacket packet(command);
   auto status = this->send_packet(&packet, update);
