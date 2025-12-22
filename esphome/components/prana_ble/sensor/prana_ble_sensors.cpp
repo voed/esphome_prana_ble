@@ -24,7 +24,22 @@ float convert_temp(short temp)
 {
   return (byteswap(temp) & 0x3fff) / 10.0;
 }
-
+void PranaBLESensors::on_prana_state(bool state) {
+  if(!state)
+  {
+    this->voltage_->publish_state(NAN);
+    this->temp_inside_out_->publish_state(NAN);
+    this->temp_inside_in_->publish_state(NAN);
+    this->temp_outside_out_->publish_state(NAN);
+    this->temp_outside_in_->publish_state(NAN);
+    this->humidity_->publish_state(NAN);
+    this->pressure_->publish_state(NAN);
+    this->tvoc_->publish_state(NAN);
+    this->co2_->publish_state(NAN);
+    this->frequency_->publish_state(NAN);
+    this->timestamp_->publish_state(NAN);
+  }
+}
 void PranaBLESensors::on_status(const PranaStatusPacket *data) {
   if(data == nullptr)
     return;
@@ -75,7 +90,9 @@ void PranaBLESensors::on_status(const PranaStatusPacket *data) {
   if(this->co2_ != nullptr)
     this->co2_->publish_state(byteswap(data->co2) & 0x3fff);
 
-  if(this->voltage_ != nullptr && data->voltage > 0)
+  if(!this->parent_->is_connected())
+    this->voltage_->publish_state({});
+  else if(this->voltage_ != nullptr && data->voltage > 0)
     this->voltage_->publish_state(data->voltage);
     
   if(this->frequency_ != nullptr && data->frequency > 0)

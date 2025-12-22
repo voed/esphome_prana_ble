@@ -25,10 +25,15 @@ void PranaBLEFan::control(const fan::FanCall &call) {
   if( (fans_locked && fan_type_ != PranaFan::FAN_BOTH) 
       || (!fans_locked && fan_type_ == PranaFan::FAN_BOTH) )
   {
-    ESP_LOGD(TAG, "Switching fan lock state");
-    this->parent_->set_fans_locked(!fans_locked);
-    delay(20);
-    
+    if(auto_lock_) {
+      ESP_LOGD(TAG, "Switching fan lock state");
+      this->parent_->set_fans_locked(!fans_locked);
+      delay(20);
+    }
+    else {
+      ESP_LOGW(TAG, "Cannot control this fan, use fan_lock switch first.");
+      return;
+    }
   }
   bool did_change = false;
   if(call.get_state().has_value() && call.get_state() != this->state)

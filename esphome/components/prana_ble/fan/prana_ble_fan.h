@@ -21,7 +21,7 @@ class PranaBLEFan : public fan::Fan, public PranaBLEClient, public Component {
 
   /* PranaClient status update */
   void on_status(const PranaStatusPacket *data) override;
-  void on_prana_state(bool is_ready) override{};
+  void on_prana_state(bool is_ready) override {};
   std::string describe() override;
   
   fan::FanTraits get_traits() override { return this->traits_; }
@@ -29,6 +29,7 @@ class PranaBLEFan : public fan::Fan, public PranaBLEClient, public Component {
   void set_fan_type(PranaFan fan_type) { fan_type_ = fan_type; }
   void set_speed_count(int8_t count) { speed_count_ = count; }
   void set_fan_direct(bool direct) { direct_ = direct; }
+  void set_auto_lock(bool auto_lock) { auto_lock_ = auto_lock; }
  protected:
   void control(const fan::FanCall &call) override;
   PranaFanMode fan_mode;
@@ -36,6 +37,7 @@ class PranaBLEFan : public fan::Fan, public PranaBLEClient, public Component {
   PranaFan fan_type_;
   bool direct_;
   int8_t speed_count_{10};
+  bool auto_lock_;
 };
 
 }  // namespace prana_ble

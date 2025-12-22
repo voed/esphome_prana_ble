@@ -73,6 +73,9 @@ class PranaBLEHub : public esphome::ble_client::BLEClientNode, public PollingCom
   short get_display_mode();
   void set_display_mode(short mode);
 
+  bool set_winter_mode(bool state);
+  bool set_heating(bool state);
+
   /** Send the `button`. */
   bool send_command(const PranaCommand command, bool update=false);
   bool send_command(const uint8_t command, bool update=false);
