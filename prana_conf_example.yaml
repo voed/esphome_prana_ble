@@ -122,7 +122,7 @@ fan:
     fan_out:
       name: Outlet fan
     fan_both: # use fan_lock switch to control separate fans
-      name: In/Out fans 
+      name: In&Out fans 
     speed_count: 10 # how many speeds your recuperator have. Default is 10
     direct_control: false # Direct fan control. More reliable and efficient. False by default because not supported by some old devices
     auto_lock: true # Change fan_lock state automatically on demand. Default is true
