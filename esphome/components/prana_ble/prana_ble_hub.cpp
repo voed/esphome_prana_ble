@@ -436,8 +436,11 @@ bool PranaBLEHub::discover_characteristics_() {
       result = false;
     } else if (descr->uuid.get_uuid().len != ESP_UUID_LEN_16 ||
                descr->uuid.get_uuid().uuid.uuid16 != ESP_GATT_UUID_CHAR_CLIENT_CONFIG) {
+
+                char buffer[esp32_ble::UUID_STR_LEN];
+                descr->uuid.to_str(buffer);
       ESP_LOGW(TAG, "Config descriptor 0x%x (uuid %s) is not a client config char uuid", this->char_handle_,
-               descr->uuid.to_str());
+               buffer);
       result = false;
     } else {
       this->config_descr_status_ = descr->handle;
