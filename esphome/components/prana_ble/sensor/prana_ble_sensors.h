@@ -19,7 +19,7 @@ class PranaBLESensors : public PranaBLEClient, public Component {
 
   /* PranaClient status update */
   void on_status(const PranaStatusPacket *data) override;
-  void on_prana_state(bool is_ready) override{};
+  void on_prana_state(bool is_ready) override;
   std::string describe() override;
 
   void set_temp_inside_out(sensor::Sensor *temp) { temp_inside_out_ = temp; }
