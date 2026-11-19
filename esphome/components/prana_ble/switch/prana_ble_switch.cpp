@@ -1,5 +1,9 @@
 #include "prana_ble_switch.h"
 #include "esphome/core/log.h"
+// format_hex_pretty / str_sprintf live in alloc_helpers.h; helpers.h stopped including it in ESPHome 2026.11.
+#if __has_include("esphome/core/alloc_helpers.h")
+#include "esphome/core/alloc_helpers.h"
+#endif
 
 #ifdef USE_ESP32
 
